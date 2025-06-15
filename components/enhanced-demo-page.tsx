@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { Navigation } from '@/components/navigation';
 import { TaskQueue } from '@/components/task-queue';
 import { TemplateGallery } from '@/components/template-gallery';
-import { DevicePreview } from '@/components/device-preview';
 import { CollaborationPanel } from '@/components/collaboration-panel';
 import { AIConsole } from '@/components/ai-console';
 import { GitHubIntegration } from '@/components/github-integration';
@@ -32,6 +32,12 @@ import {
   Zap
 } from 'lucide-react';
 import { Template } from '@/lib/types';
+
+// Dynamically import DevicePreview with SSR disabled
+const DevicePreview = dynamic(() => import('@/components/device-preview').then(mod => ({ default: mod.DevicePreview })), {
+  ssr: false,
+  loading: () => <div className="flex items-center justify-center h-full">Loading preview...</div>
+});
 
 export function EnhancedDemoPage() {
   const [prompt, setPrompt] = useState('');
