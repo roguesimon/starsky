@@ -423,6 +423,7 @@ export function EnhancedDemoPageV3() {
                   <EnhancedAIChat
                     projectId={projectId}
                     userTier={userTier}
+                    framework={framework}
                     onCodeGenerated={handleCodeGenerated}
                   />
                 </TabsContent>

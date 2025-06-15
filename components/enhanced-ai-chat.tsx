@@ -46,10 +46,11 @@ interface ChatMessage {
 interface EnhancedAIChatProps {
   projectId: string;
   userTier: 'free' | 'pro' | 'enterprise';
+  framework: string;
   onCodeGenerated?: (code: string) => void;
 }
 
-export function EnhancedAIChat({ projectId, userTier, onCodeGenerated }: EnhancedAIChatProps) {
+export function EnhancedAIChat({ projectId, userTier, framework, onCodeGenerated }: EnhancedAIChatProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
@@ -665,7 +666,7 @@ This solution prioritizes speed and privacy while maintaining functionality. Let
               onChange={setCurrentMessage}
               onSuggestionSelect={setCurrentMessage}
               framework={framework}
-              projectContext={projectMemory?.framework || ''}
+              projectContext={''}
               aiModel={selectedModel}
             />
             
