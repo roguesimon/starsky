@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -273,7 +273,7 @@ export function VisualBuilder({ onCodeChange, framework }: VisualBuilderProps) {
   }, [components, onCodeChange]);
 
   // Generate code whenever components change
-  React.useEffect(() => {
+  useEffect(() => {
     generateCode();
   }, [generateCode]);
 
