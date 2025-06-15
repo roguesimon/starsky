@@ -5,26 +5,30 @@ import dynamic from 'next/dynamic';
 import { Navigation } from '@/components/navigation';
 import { EnhancedAIChat } from '@/components/enhanced-ai-chat';
 import { AIJobMonitor } from '@/components/ai-job-monitor';
-import { VisualBuilder } from '@/components/visual-builder';
-import { PluginStore } from '@/components/plugin-store';
+import { VisualComponentGallery } from '@/components/visual-component-gallery';
+import { PromptChainBuilder } from '@/components/prompt-chain-builder';
 import { SmartFileExplorer } from '@/components/smart-file-explorer';
 import { FrameworkSwitcher } from '@/components/framework-switcher';
 import { ChatHistoryPanel } from '@/components/chat-history-panel';
-import { CodeExplainer } from '@/components/code-explainer';
-import { MobileExport } from '@/components/mobile-export';
+import { EnhancedCodeExplainer } from '@/components/enhanced-code-explainer';
+import { EnhancedMobileExport } from '@/components/enhanced-mobile-export';
 import { ProjectContextMemory } from '@/components/project-context-memory';
-import { LivePreviewDeploy } from '@/components/live-preview-deploy';
+import { OneClickPreviewDeploy } from '@/components/one-click-preview-deploy';
 import { TaskQueue } from '@/components/task-queue';
 import { TemplateGallery } from '@/components/template-gallery';
 import { CollaborationPanel } from '@/components/collaboration-panel';
 import { GitHubIntegration } from '@/components/github-integration';
-import { PromptHistory } from '@/components/prompt-history';
+import { PromptLibrary } from '@/components/prompt-library';
 import { ProjectNotes } from '@/components/project-notes';
 import { MonacoEditor } from '@/components/monaco-editor';
+import { FileDiffViewer } from '@/components/file-diff-viewer';
+import { RealtimeCollaboration } from '@/components/realtime-collaboration';
+import { EnhancedPromptAutocomplete } from '@/components/enhanced-prompt-autocomplete';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { toast } from 'sonner';
 import { 
   Send, 
   Code, 
@@ -47,9 +51,12 @@ import {
   Moon,
   Sun,
   Activity,
-  BarChart3
+  BarChart3,
+  Workflow,
+  BookOpen,
+  GitBranch
 } from 'lucide-react';
-import { Template, Plugin, FileNode, ProjectMemory } from '@/lib/types';
+import { Template, Plugin, FileNode, ProjectMemory, FileVersion } from '@/lib/types';
 
 // Dynamically import DevicePreview with SSR disabled
 const DevicePreview = dynamic(() => import('@/components/device-preview').then(mod => ({ default: mod.DevicePreview })), {
@@ -110,45 +117,129 @@ export function EnhancedDemoPageV3() {
   const [projectMemory, setProjectMemory] = useState<ProjectMemory | null>(null);
   const [mode, setMode] = useState<'prompt' | 'visual'>('prompt');
   const [userTier] = useState<'free' | 'pro' | 'enterprise'>('pro'); // Demo as pro user
+  const [currentPrompt, setCurrentPrompt] = useState('');
+  const [isCollaborationEnabled, setIsCollaborationEnabled] = useState(false);
+  const [selectedAIModel, setSelectedAIModel] = useState('gpt-4o');
+  const [deploymentUrl, setDeploymentUrl] = useState<string | null>(null);
+  const [fileVersions, setFileVersions] = useState<FileVersion[]>([
+    {
+      id: 'v1',
+      content: generatedCode,
+      timestamp: new Date(Date.now() - 3600000).toISOString(),
+      author: 'You',
+      message: 'Initial version',
+      changes: { additions: 30, deletions: 0, modifications: 0 }
+    },
+    {
+      id: 'v2',
+      content: generatedCode.replace('Welcome to Starsky AI', 'Welcome to Multi-Model AI'),
+      timestamp: new Date(Date.now() - 1800000).toISOString(),
+      author: 'AI Assistant',
+      message: 'Updated heading text',
+      changes: { additions: 1, deletions: 1, modifications: 0 }
+    }
+  ]);
   
   const projectId = 'demo-project-v3';
   const projectName = 'Multi-Model AI Project';
+  const currentUser = {
+    id: 'user-1',
+    name: 'You',
+    avatar: 'https://images.pexels.com/photos/1212984/pexels-photo-1212984.jpeg?auto=compress&cs=tinysrgb&w=100'
+  };
 
   const handleTaskComplete = (result: string) => {
-    console.log('Task completed:', result);
+    toast.success('Task completed successfully', {
+      description: result.substring(0, 50) + '...'
+    });
   };
 
   const handleTemplateSelect = (template: Template) => {
     setGeneratedCode(template.code);
+    toast.success('Template applied', {
+      description: `Applied template: ${template.name}`
+    });
+  };
+
+  const handleComponentSelect = (component: any) => {
+    // Insert component code into the current code
+    const updatedCode = generatedCode.replace('</body>', `${component.code}\n</body>`);
+    setGeneratedCode(updatedCode);
+    
+    toast.success('Component inserted', {
+      description: `Added ${component.name} to your project`
+    });
+    
+    // Add to file versions
+    const newVersion: FileVersion = {
+      id: `v${fileVersions.length + 1}`,
+      content: updatedCode,
+      timestamp: new Date().toISOString(),
+      author: 'You',
+      message: `Added ${component.name} component`,
+      changes: { additions: component.code.split('\n').length, deletions: 0, modifications: 0 }
+    };
+    
+    setFileVersions(prev => [...prev, newVersion]);
   };
 
   const handleDebugRequest = (query: string) => {
-    // This would be handled by the AI chat now
+    setCurrentPrompt(query);
+    setSelectedAIModel('command-r-plus');
     setActiveTab('chat');
+    
+    toast.info('Debug request sent to Command R+', {
+      description: 'Switching to specialized debugging model'
+    });
   };
 
   const handleRestorePrompt = (prompt: string) => {
+    setCurrentPrompt(prompt);
     setActiveTab('chat');
   };
 
   const handleRerunPrompt = (prompt: string) => {
+    setCurrentPrompt(prompt);
     setActiveTab('chat');
+    
+    toast.info('Re-running previous prompt', {
+      description: prompt.substring(0, 50) + '...'
+    });
   };
 
   const handleInstallPlugin = (plugin: Plugin) => {
-    console.log('Installing plugin:', plugin);
+    toast.success(`Plugin installed: ${plugin.name}`, {
+      description: 'Plugin has been added to your project'
+    });
   };
 
   const handleFileSelect = (file: FileNode) => {
-    console.log('File selected:', file);
+    toast.info(`File selected: ${file.name}`);
   };
 
   const handlePromptInFile = (file: FileNode) => {
+    setCurrentPrompt(`Modify the file ${file.name}: `);
     setActiveTab('chat');
   };
 
   const handleFrameworkChange = (newFramework: string) => {
     setFramework(newFramework);
+    
+    toast.success(`Framework changed to ${newFramework}`, {
+      description: 'Your project has been converted to the new framework'
+    });
+    
+    // Add to file versions
+    const newVersion: FileVersion = {
+      id: `v${fileVersions.length + 1}`,
+      content: generatedCode,
+      timestamp: new Date().toISOString(),
+      author: 'You',
+      message: `Converted to ${newFramework}`,
+      changes: { additions: 20, deletions: 15, modifications: 10 }
+    };
+    
+    setFileVersions(prev => [...prev, newVersion]);
   };
 
   const handleCodeSelect = (code: string) => {
@@ -158,20 +249,97 @@ export function EnhancedDemoPageV3() {
 
   const handleMemoryUpdate = (memory: ProjectMemory) => {
     setProjectMemory(memory);
-  };
-
-  const handleDeploymentUpdate = (deployment: any) => {
-    console.log('Deployment updated:', deployment);
+    
+    toast.info('Project memory updated', {
+      description: 'AI has learned from your project patterns'
+    });
   };
 
   const handleCodeGenerated = (code: string) => {
     setGeneratedCode(code);
+    
+    // Add to file versions
+    const newVersion: FileVersion = {
+      id: `v${fileVersions.length + 1}`,
+      content: code,
+      timestamp: new Date().toISOString(),
+      author: 'AI Assistant',
+      message: 'Generated from AI prompt',
+      changes: { additions: 25, deletions: 10, modifications: 5 }
+    };
+    
+    setFileVersions(prev => [...prev, newVersion]);
+  };
+
+  const handleDeploymentUpdate = (deployment: any) => {
+    setDeploymentUrl(deployment.url);
+    
+    toast.success('Deployment successful', {
+      description: `Your site is live at ${deployment.url}`
+    });
+  };
+
+  const handleChainExecute = async (chain: any[]) => {
+    toast.success('Prompt chain executed', {
+      description: `${chain.length} steps completed successfully`
+    });
+  };
+
+  const handleFileRevert = (versionId: string) => {
+    const version = fileVersions.find(v => v.id === versionId);
+    if (version) {
+      setGeneratedCode(version.content);
+      
+      toast.success('Reverted to previous version', {
+        description: `Reverted to: ${version.message}`
+      });
+    }
+  };
+
+  const handleFileDuplicate = (versionId: string) => {
+    const version = fileVersions.find(v => v.id === versionId);
+    if (version) {
+      const newVersion: FileVersion = {
+        id: `v${fileVersions.length + 1}`,
+        content: version.content,
+        timestamp: new Date().toISOString(),
+        author: 'You',
+        message: `Duplicate of: ${version.message}`,
+        changes: { ...version.changes }
+      };
+      
+      setFileVersions(prev => [...prev, newVersion]);
+      
+      toast.success('Version duplicated', {
+        description: `Created duplicate of: ${version.message}`
+      });
+    }
+  };
+
+  const handleSelectPrompt = (prompt: string) => {
+    setCurrentPrompt(prompt);
+    
+    toast.info('Prompt selected from library', {
+      description: prompt.substring(0, 50) + '...'
+    });
+  };
+
+  const toggleCollaboration = () => {
+    setIsCollaborationEnabled(!isCollaborationEnabled);
+    
+    if (!isCollaborationEnabled) {
+      toast.success('Collaboration enabled', {
+        description: 'Real-time collaboration is now active'
+      });
+    }
   };
 
   // Toggle dark mode
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
     document.documentElement.classList.toggle('dark');
+    
+    toast.info(`${isDarkMode ? 'Light' : 'Dark'} mode activated`);
   };
 
   return (
@@ -214,12 +382,21 @@ export function EnhancedDemoPageV3() {
                   <Palette className="h-4 w-4 mr-2" />
                   Visual Mode
                 </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={toggleCollaboration}
+                  className={isCollaborationEnabled ? 'bg-green-100 border-green-300' : ''}
+                >
+                  <Users className="h-4 w-4 mr-2" />
+                  Collab
+                </Button>
               </div>
             </div>
             
             {mode === 'prompt' ? (
               <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1">
-                <TabsList className="grid w-full grid-cols-4 mx-4 mt-2">
+                <TabsList className="grid w-full grid-cols-5 mx-4 mt-2">
                   <TabsTrigger value="chat" className="text-xs">
                     <MessageSquare className="h-3 w-3 mr-1" />
                     AI Chat
@@ -228,13 +405,17 @@ export function EnhancedDemoPageV3() {
                     <BarChart3 className="h-3 w-3 mr-1" />
                     Monitor
                   </TabsTrigger>
-                  <TabsTrigger value="templates" className="text-xs">
-                    <Palette className="h-3 w-3 mr-1" />
-                    Templates
+                  <TabsTrigger value="chains" className="text-xs">
+                    <Workflow className="h-3 w-3 mr-1" />
+                    Chains
                   </TabsTrigger>
-                  <TabsTrigger value="plugins" className="text-xs">
+                  <TabsTrigger value="library" className="text-xs">
+                    <BookOpen className="h-3 w-3 mr-1" />
+                    Library
+                  </TabsTrigger>
+                  <TabsTrigger value="components" className="text-xs">
                     <Puzzle className="h-3 w-3 mr-1" />
-                    Plugins
+                    Components
                   </TabsTrigger>
                 </TabsList>
                 
@@ -253,21 +434,30 @@ export function EnhancedDemoPageV3() {
                   />
                 </TabsContent>
                 
-                <TabsContent value="templates" className="flex-1 m-0">
-                  <TemplateGallery onSelectTemplate={handleTemplateSelect} />
+                <TabsContent value="chains" className="flex-1 m-0 p-4">
+                  <PromptChainBuilder
+                    projectId={projectId}
+                    onChainExecute={handleChainExecute}
+                  />
                 </TabsContent>
                 
-                <TabsContent value="plugins" className="flex-1 m-0">
-                  <PluginStore 
-                    onInstallPlugin={handleInstallPlugin}
+                <TabsContent value="library" className="flex-1 m-0">
+                  <PromptLibrary
+                    onSelectPrompt={handleSelectPrompt}
+                  />
+                </TabsContent>
+                
+                <TabsContent value="components" className="flex-1 m-0">
+                  <VisualComponentGallery
+                    onComponentSelect={handleComponentSelect}
                     framework={framework}
                   />
                 </TabsContent>
               </Tabs>
             ) : (
               <div className="flex-1">
-                <VisualBuilder 
-                  onCodeChange={setGeneratedCode}
+                <VisualComponentGallery
+                  onComponentSelect={handleComponentSelect}
                   framework={framework}
                 />
               </div>
@@ -282,16 +472,30 @@ export function EnhancedDemoPageV3() {
                 <Badge variant="outline">Live Preview</Badge>
                 <Badge variant="outline">{framework}</Badge>
                 <Badge variant="secondary">Multi-Model AI</Badge>
+                {deploymentUrl && (
+                  <Badge variant="default" className="bg-green-600">
+                    <Globe className="h-3 w-3 mr-1" />
+                    Live
+                  </Badge>
+                )}
               </div>
               
-              <Button variant="outline" size="sm" onClick={() => setRightPanelTab('framework')}>
-                <Settings className="h-4 w-4 mr-2" />
-                Settings
-              </Button>
+              <div className="flex items-center space-x-2">
+                {isCollaborationEnabled && (
+                  <Badge variant="outline" className="animate-pulse bg-green-100 border-green-300">
+                    <Users className="h-3 w-3 mr-1" />
+                    3 Collaborators
+                  </Badge>
+                )}
+                <Button variant="outline" size="sm" onClick={() => setRightPanelTab('framework')}>
+                  <Settings className="h-4 w-4 mr-2" />
+                  Settings
+                </Button>
+              </div>
             </div>
 
             <Tabs value={rightPanelTab} onValueChange={setRightPanelTab} className="flex-1">
-              <TabsList className="grid w-full grid-cols-8">
+              <TabsList className="grid w-full grid-cols-10">
                 <TabsTrigger value="preview">
                   <Eye className="h-4 w-4 mr-2" />
                   Preview
@@ -304,6 +508,10 @@ export function EnhancedDemoPageV3() {
                   <FileText className="h-4 w-4 mr-2" />
                   Files
                 </TabsTrigger>
+                <TabsTrigger value="history">
+                  <GitBranch className="h-4 w-4 mr-2" />
+                  History
+                </TabsTrigger>
                 <TabsTrigger value="tasks">
                   <Layers className="h-4 w-4 mr-2" />
                   Tasks
@@ -315,6 +523,10 @@ export function EnhancedDemoPageV3() {
                 <TabsTrigger value="mobile">
                   <Smartphone className="h-4 w-4 mr-2" />
                   Mobile
+                </TabsTrigger>
+                <TabsTrigger value="collab">
+                  <Users className="h-4 w-4 mr-2" />
+                  Collab
                 </TabsTrigger>
                 <TabsTrigger value="memory">
                   <Brain className="h-4 w-4 mr-2" />
@@ -361,6 +573,16 @@ export function EnhancedDemoPageV3() {
                 />
               </TabsContent>
               
+              <TabsContent value="history" className="flex-1 m-0 p-4">
+                <FileDiffViewer
+                  fileName="index.html"
+                  versions={fileVersions}
+                  currentContent={generatedCode}
+                  onRevert={handleFileRevert}
+                  onDuplicate={handleFileDuplicate}
+                />
+              </TabsContent>
+              
               <TabsContent value="tasks" className="flex-1 m-0 p-4">
                 <TaskQueue 
                   projectId={projectId} 
@@ -369,7 +591,7 @@ export function EnhancedDemoPageV3() {
               </TabsContent>
               
               <TabsContent value="deploy" className="flex-1 m-0 p-4">
-                <LivePreviewDeploy
+                <OneClickPreviewDeploy
                   projectCode={generatedCode}
                   projectName={projectName}
                   onDeploymentUpdate={handleDeploymentUpdate}
@@ -377,10 +599,19 @@ export function EnhancedDemoPageV3() {
               </TabsContent>
               
               <TabsContent value="mobile" className="flex-1 m-0 p-4">
-                <MobileExport
+                <EnhancedMobileExport
                   projectCode={generatedCode}
                   projectName={projectName}
                   framework={framework}
+                  webUrl={deploymentUrl || undefined}
+                />
+              </TabsContent>
+              
+              <TabsContent value="collab" className="flex-1 m-0 p-4">
+                <RealtimeCollaboration
+                  projectId={projectId}
+                  currentUser={currentUser}
+                  onCodeChange={handleCodeGenerated}
                 />
               </TabsContent>
               
@@ -405,10 +636,11 @@ export function EnhancedDemoPageV3() {
       {/* Code Explainer Modal */}
       {showCodeExplainer && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <CodeExplainer
+          <EnhancedCodeExplainer
             selectedCode={selectedCode}
             onClose={() => setShowCodeExplainer(false)}
             language="html"
+            aiModel={selectedAIModel}
           />
         </div>
       )}

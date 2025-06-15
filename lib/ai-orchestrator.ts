@@ -8,6 +8,9 @@ export interface AIRequest {
   userTier: 'free' | 'pro' | 'enterprise';
   preferredModel?: string;
   streaming?: boolean;
+  fallbackModels?: string[];
+  maxRetries?: number;
+  timeout?: number;
 }
 
 export interface AIJobLog {
@@ -22,11 +25,17 @@ export interface AIJobLog {
   cost: number;
   success: boolean;
   error?: string;
+  fallbackAttempts?: number;
+  routingDecision?: string;
 }
 
 export class AIOrchestrator {
   private jobLogs: AIJobLog[] = [];
   private activeJobs: Map<string, AbortController> = new Map();
+  private modelUsageStats: Map<string, { count: number, tokens: number, cost: number }> = new Map();
+  private modelAvailability: Map<string, boolean> = new Map(
+    AI_MODELS.map(model => [model.id, model.isAvailable])
+  );
 
   async processRequest(request: AIRequest): Promise<{
     response: AIModelResponse;
@@ -40,9 +49,37 @@ export class AIOrchestrator {
       const promptType = classifyPrompt(request.prompt);
       
       // Get optimal model based on prompt type and user tier
-      const selectedModel = request.preferredModel 
+      let selectedModel = request.preferredModel 
         ? AI_MODELS.find(m => m.id === request.preferredModel) || getOptimalModel(promptType, request.userTier)
         : getOptimalModel(promptType, request.userTier);
+
+      // Check if model is available
+      if (!this.modelAvailability.get(selectedModel.id)) {
+        console.log(`🤖 AI Orchestrator: Primary model ${selectedModel.name} unavailable, using fallback`);
+        
+        // Try fallback models if specified
+        if (request.fallbackModels && request.fallbackModels.length > 0) {
+          for (const fallbackId of request.fallbackModels) {
+            const fallbackModel = AI_MODELS.find(m => m.id === fallbackId);
+            if (fallbackModel && this.modelAvailability.get(fallbackId)) {
+              selectedModel = fallbackModel;
+              break;
+            }
+          }
+        } else {
+          // Default fallback to any available model
+          const availableModel = AI_MODELS.find(m => 
+            this.modelAvailability.get(m.id) && 
+            (request.userTier !== 'free' || !m.isPremium)
+          );
+          
+          if (availableModel) {
+            selectedModel = availableModel;
+          } else {
+            throw new Error('No available AI models found');
+          }
+        }
+      }
 
       console.log(`🤖 AI Orchestrator: Using ${selectedModel.name} for ${promptType} task`);
 
@@ -50,31 +87,75 @@ export class AIOrchestrator {
       const abortController = new AbortController();
       this.activeJobs.set(jobId, abortController);
 
-      // Process the request with the selected model
-      const response = await this.callModel(selectedModel, request, abortController.signal);
-      
-      const duration = Date.now() - startTime;
-      const cost = response.usage.totalTokens * selectedModel.costPerToken;
+      // Set timeout if specified
+      let timeoutId: NodeJS.Timeout | undefined;
+      if (request.timeout) {
+        timeoutId = setTimeout(() => {
+          abortController.abort();
+        }, request.timeout);
+      }
 
-      // Create job log
-      const jobLog: AIJobLog = {
-        id: jobId,
-        timestamp: new Date().toISOString(),
-        prompt: request.prompt,
-        modelUsed: selectedModel.id,
-        promptType,
-        response: response.content,
-        duration,
-        tokensUsed: response.usage.totalTokens,
-        cost,
-        success: true
-      };
+      try {
+        // Process the request with the selected model
+        const response = await this.callModel(selectedModel, request, abortController.signal);
+        
+        // Clear timeout if set
+        if (timeoutId) clearTimeout(timeoutId);
+        
+        const duration = Date.now() - startTime;
+        const cost = response.usage.totalTokens * selectedModel.costPerToken;
 
-      this.jobLogs.push(jobLog);
-      this.activeJobs.delete(jobId);
+        // Update model usage stats
+        this.updateModelStats(selectedModel.id, response.usage.totalTokens, cost);
 
-      return { response, jobLog };
+        // Create job log
+        const jobLog: AIJobLog = {
+          id: jobId,
+          timestamp: new Date().toISOString(),
+          prompt: request.prompt,
+          modelUsed: selectedModel.id,
+          promptType,
+          response: response.content,
+          duration,
+          tokensUsed: response.usage.totalTokens,
+          cost,
+          success: true,
+          routingDecision: `Selected ${selectedModel.name} based on prompt type: ${promptType}`
+        };
 
+        this.jobLogs.push(jobLog);
+        this.activeJobs.delete(jobId);
+
+        return { response, jobLog };
+      } catch (error) {
+        // Clear timeout if set
+        if (timeoutId) clearTimeout(timeoutId);
+        
+        // Try fallback models if retries are enabled
+        if (request.maxRetries && request.maxRetries > 0) {
+          console.log(`🤖 AI Orchestrator: Primary model failed, attempting fallbacks`);
+          
+          // Mark this model as temporarily unavailable
+          this.modelAvailability.set(selectedModel.id, false);
+          
+          // Reset after 5 minutes
+          setTimeout(() => {
+            this.modelAvailability.set(selectedModel.id, true);
+          }, 5 * 60 * 1000);
+          
+          // Try with reduced retries
+          const fallbackRequest: AIRequest = {
+            ...request,
+            preferredModel: undefined, // Let orchestrator choose best fallback
+            maxRetries: request.maxRetries - 1,
+            fallbackModels: request.fallbackModels?.filter(id => id !== selectedModel.id)
+          };
+          
+          return this.processRequest(fallbackRequest);
+        }
+        
+        throw error;
+      }
     } catch (error) {
       const duration = Date.now() - startTime;
       const jobLog: AIJobLog = {
@@ -276,6 +357,15 @@ The visual design follows current best practices and accessibility guidelines.`;
     return [...baseSuggestions, ...(modelSpecificSuggestions[model.id] || [])];
   }
 
+  private updateModelStats(modelId: string, tokens: number, cost: number) {
+    const currentStats = this.modelUsageStats.get(modelId) || { count: 0, tokens: 0, cost: 0 };
+    this.modelUsageStats.set(modelId, {
+      count: currentStats.count + 1,
+      tokens: currentStats.tokens + tokens,
+      cost: currentStats.cost + cost
+    });
+  }
+
   getJobLogs(projectId?: string): AIJobLog[] {
     return this.jobLogs.filter(log => !projectId || log.prompt.includes(projectId));
   }
@@ -304,22 +394,84 @@ The visual design follows current best practices and accessibility guidelines.`;
     averageDuration: number;
     totalCost: number;
     modelUsage: Record<string, number>;
+    modelCosts: Record<string, number>;
+    modelTokens: Record<string, number>;
+    promptTypeDistribution: Record<string, number>;
   } {
     const logs = this.jobLogs;
     const successfulJobs = logs.filter(log => log.success);
     
-    const modelUsage = logs.reduce((acc, log) => {
-      acc[log.modelUsed] = (acc[log.modelUsed] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const modelUsage: Record<string, number> = {};
+    const modelCosts: Record<string, number> = {};
+    const modelTokens: Record<string, number> = {};
+    const promptTypeDistribution: Record<string, number> = {};
+    
+    logs.forEach(log => {
+      // Model usage
+      modelUsage[log.modelUsed] = (modelUsage[log.modelUsed] || 0) + 1;
+      
+      // Model costs
+      modelCosts[log.modelUsed] = (modelCosts[log.modelUsed] || 0) + log.cost;
+      
+      // Model tokens
+      modelTokens[log.modelUsed] = (modelTokens[log.modelUsed] || 0) + log.tokensUsed;
+      
+      // Prompt type distribution
+      promptTypeDistribution[log.promptType] = (promptTypeDistribution[log.promptType] || 0) + 1;
+    });
 
     return {
       totalJobs: logs.length,
       successRate: logs.length > 0 ? successfulJobs.length / logs.length : 0,
       averageDuration: logs.length > 0 ? logs.reduce((sum, log) => sum + log.duration, 0) / logs.length : 0,
       totalCost: logs.reduce((sum, log) => sum + log.cost, 0),
-      modelUsage
+      modelUsage,
+      modelCosts,
+      modelTokens,
+      promptTypeDistribution
     };
+  }
+
+  getModelAvailability(): Record<string, boolean> {
+    return Object.fromEntries(this.modelAvailability);
+  }
+
+  setModelAvailability(modelId: string, isAvailable: boolean): void {
+    this.modelAvailability.set(modelId, isAvailable);
+  }
+
+  getDetailedModelStats(): Record<string, {
+    count: number;
+    tokens: number;
+    cost: number;
+    averageResponseTime: number;
+    successRate: number;
+  }> {
+    const result: Record<string, any> = {};
+    
+    // Initialize with basic stats
+    for (const [modelId, stats] of this.modelUsageStats.entries()) {
+      result[modelId] = {
+        ...stats,
+        averageResponseTime: 0,
+        successRate: 1
+      };
+    }
+    
+    // Add response time and success rate
+    for (const model of AI_MODELS) {
+      const modelLogs = this.jobLogs.filter(log => log.modelUsed === model.id);
+      if (modelLogs.length > 0) {
+        const successfulLogs = modelLogs.filter(log => log.success);
+        result[model.id] = {
+          ...(result[model.id] || { count: 0, tokens: 0, cost: 0 }),
+          averageResponseTime: modelLogs.reduce((sum, log) => sum + log.duration, 0) / modelLogs.length,
+          successRate: successfulLogs.length / modelLogs.length
+        };
+      }
+    }
+    
+    return result;
   }
 }
 

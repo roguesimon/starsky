@@ -13,6 +13,9 @@ export interface Project {
   github_repo?: string;
   notes?: string;
   theme_config?: ThemeConfig;
+  is_public?: boolean;
+  visibility?: 'public' | 'private' | 'team';
+  ai_model_preferences?: Record<string, string>;
 }
 
 export interface Folder {
@@ -131,4 +134,90 @@ export interface User {
   provider: 'email' | 'github' | 'google';
   subscription?: 'free' | 'pro' | 'enterprise';
   created_at: string;
+}
+
+export interface FileVersion {
+  id: string;
+  content: string;
+  timestamp: string;
+  author: string;
+  message: string;
+  changes: {
+    additions: number;
+    deletions: number;
+    modifications: number;
+  };
+}
+
+export interface PromptChain {
+  id: string;
+  name: string;
+  steps: PromptStep[];
+  created_at: string;
+  updated_at: string;
+  user_id: string;
+  project_id: string;
+  is_favorite: boolean;
+}
+
+export interface PromptStep {
+  id: string;
+  prompt: string;
+  model_id?: string;
+  status: 'pending' | 'running' | 'completed' | 'failed';
+  result?: string;
+  error?: string;
+  duration?: number;
+  depends_on?: string[];
+}
+
+export interface AIConversation {
+  id: string;
+  project_id: string;
+  user_id: string;
+  model_used: string;
+  prompt: string;
+  response: string;
+  prompt_type: string;
+  tokens_used: number;
+  cost: number;
+  duration_ms: number;
+  confidence_score?: number;
+  is_favorite: boolean;
+  created_at: string;
+}
+
+export interface DeploymentConfig {
+  id: string;
+  project_id: string;
+  provider: 'vercel' | 'netlify' | 'github-pages';
+  site_id?: string;
+  custom_domain?: string;
+  is_public: boolean;
+  auto_deploy: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MobileExportConfig {
+  id: string;
+  project_id: string;
+  app_name: string;
+  bundle_id: string;
+  version: string;
+  platforms: ('ios' | 'android' | 'web')[];
+  shared_code_enabled: boolean;
+  native_optimizations: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AIModelPreference {
+  id: string;
+  user_id: string;
+  project_id?: string;
+  preferred_models: Record<string, string>;
+  auto_select_enabled: boolean;
+  created_at: string;
+  updated_at: string;
 }
