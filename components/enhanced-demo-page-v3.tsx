@@ -713,5 +713,3 @@ export function EnhancedDemoPageV3() {
     </AIPromptHook>
   );
 }
-
-export { EnhancedDemoPageV3 }
