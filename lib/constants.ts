@@ -1,3 +1,5 @@
+import { DevicePreview, Template } from './types';
+
 export const DEVICE_PRESETS: DevicePreview[] = [
   { type: 'desktop', width: 1920, height: 1080, name: 'Desktop' },
   { type: 'desktop', width: 1440, height: 900, name: 'Laptop' },
