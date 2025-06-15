@@ -5,16 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { 
-  Users, 
-  Circle, 
-  Cursor, 
-  Eye, 
-  Edit3, 
-  MessageSquare,
-  Wifi,
-  WifiOff
-} from 'lucide-react';
+import { Users, Circle, TextCursor as Cursor, Eye, Edit3, MessageSquare, Wifi, WifiOff } from 'lucide-react';
 
 interface CollaboratorCursor {
   id: string;
