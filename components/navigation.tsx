@@ -22,6 +22,7 @@ export function Navigation() {
     { name: 'Pricing', href: '/pricing' },
     { name: 'Docs', href: '/docs' },
     { name: 'Demo', href: '/demo' },
+    { name: 'Multi-AI Demo', href: '/demo-v3' },
   ];
 
   return (
@@ -65,7 +66,7 @@ export function Navigation() {
             <Button variant="ghost" size="sm" className="text-navy-300 hover:text-blue-400 hover:bg-navy-800" asChild>
               <Link href="/auth/login">Sign In</Link>
             </Button>
-            <Button size="sm" className="bg-gradient-blue-teal hover:shadow-glow-blue transition-all duration-300" asChild>
+            <Button size="sm" className="bg-gradient-blue-teal hover:shadow-glow-accent transition-all duration-300 group" asChild>
               <Link href="/auth/signup">Get Started</Link>
             </Button>
           </div>
@@ -103,7 +104,7 @@ export function Navigation() {
                   <Button variant="ghost" size="sm" className="justify-start text-navy-300 hover:text-blue-400 hover:bg-navy-800" asChild>
                     <Link href="/auth/login">Sign In</Link>
                   </Button>
-                  <Button size="sm" className="bg-gradient-blue-teal hover:shadow-glow-blue transition-all duration-300" asChild>
+                  <Button size="sm" className="bg-gradient-blue-teal hover:shadow-glow-accent transition-all duration-300" asChild>
                     <Link href="/auth/signup">Get Started</Link>
                   </Button>
                 </div>
