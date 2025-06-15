@@ -70,7 +70,7 @@ const DevicePreview = dynamic(() => import('@/components/device-preview').then(m
   loading: () => <div className="flex items-center justify-center h-full">Loading preview...</div>
 });
 
-function EnhancedDemoPageV3() {
+export default function EnhancedDemoPageV3() {
   const [generatedCode, setGeneratedCode] = useState(`<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -713,5 +713,3 @@ function EnhancedDemoPageV3() {
     </AIPromptHook>
   );
 }
-
-export default EnhancedDemoPageV3;
