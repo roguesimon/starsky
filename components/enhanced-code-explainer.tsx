@@ -16,7 +16,8 @@ import {
   Brain,
   Zap,
   Star,
-  MessageSquare
+  MessageSquare,
+  CheckCircle
 } from 'lucide-react';
 
 interface CodeExplanation {
