@@ -44,6 +44,22 @@ export interface Template {
   is_premium: boolean;
 }
 
+export interface Plugin {
+  id: string;
+  name: string;
+  description: string;
+  category: 'payment' | 'database' | 'auth' | 'email' | 'analytics' | 'ui' | 'deployment';
+  icon: React.ComponentType<any>;
+  version: string;
+  downloads: number;
+  rating: number;
+  isPremium: boolean;
+  isInstalled: boolean;
+  envVars: string[];
+  dependencies: string[];
+  setupCode: string;
+}
+
 export interface Collaborator {
   id: string;
   email: string;
@@ -84,4 +100,35 @@ export interface DevicePreview {
   width: number;
   height: number;
   name: string;
+}
+
+export interface FileNode {
+  id: string;
+  name: string;
+  type: 'file' | 'folder';
+  content?: string;
+  language?: string;
+  children?: FileNode[];
+  isOpen?: boolean;
+}
+
+export interface ProjectMemory {
+  id: string;
+  framework: string;
+  stack: string[];
+  patterns: string[];
+  preferences: Record<string, any>;
+  promptHistory: string[];
+  learnings: string[];
+  lastUpdated: string;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  avatar?: string;
+  provider: 'email' | 'github' | 'google';
+  subscription?: 'free' | 'pro' | 'enterprise';
+  created_at: string;
 }
