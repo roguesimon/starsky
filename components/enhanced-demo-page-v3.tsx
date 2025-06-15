@@ -24,6 +24,8 @@ import { MonacoEditor } from '@/components/monaco-editor';
 import { FileDiffViewer } from '@/components/file-diff-viewer';
 import { RealtimeCollaboration } from '@/components/realtime-collaboration';
 import { EnhancedPromptAutocomplete } from '@/components/enhanced-prompt-autocomplete';
+import { AIPromptHook } from '@/components/ai-orchestrator-hook';
+import { TokenUsageDisplay } from '@/components/subscription/token-usage-display';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -54,9 +56,13 @@ import {
   BarChart3,
   Workflow,
   BookOpen,
-  GitBranch
+  GitBranch,
+  CreditCard
 } from 'lucide-react';
 import { Template, Plugin, FileNode, ProjectMemory, FileVersion } from '@/lib/types';
+import { useSubscription } from '@/lib/hooks/use-subscription';
+import { SUBSCRIPTION_PLANS } from '@/lib/subscription-plans';
+import { UpgradePlanModal } from '@/components/subscription/upgrade-plan-modal';
 
 // Dynamically import DevicePreview with SSR disabled
 const DevicePreview = dynamic(() => import('@/components/device-preview').then(mod => ({ default: mod.DevicePreview })), {
@@ -139,6 +145,7 @@ export function EnhancedDemoPageV3() {
       changes: { additions: 1, deletions: 1, modifications: 0 }
     }
   ]);
+  const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
   
   const projectId = 'demo-project-v3';
   const projectName = 'Multi-Model AI Project';
@@ -147,6 +154,9 @@ export function EnhancedDemoPageV3() {
     name: 'You',
     avatar: 'https://images.pexels.com/photos/1212984/pexels-photo-1212984.jpeg?auto=compress&cs=tinysrgb&w=100'
   };
+
+  // Simulated subscription data
+  const { tokenUsage, planId, plan } = useSubscription(currentUser.id);
 
   const handleTaskComplete = (result: string) => {
     toast.success('Task completed successfully', {
@@ -334,6 +344,15 @@ export function EnhancedDemoPageV3() {
     }
   };
 
+  const handleUpgrade = async (selectedPlanId: string, paymentMethod: 'card' | 'crypto') => {
+    toast.success('Redirecting to checkout', {
+      description: `You selected the ${SUBSCRIPTION_PLANS.find(p => p.id === selectedPlanId)?.name} plan`
+    });
+    
+    // In a real implementation, this would redirect to the checkout page
+    setIsUpgradeModalOpen(false);
+  };
+
   // Toggle dark mode
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
@@ -343,308 +362,356 @@ export function EnhancedDemoPageV3() {
   };
 
   return (
-    <div className={`min-h-screen bg-background ${isDarkMode ? 'dark' : ''}`}>
-      <Navigation />
-      
-      <main className="pt-16">
-        <div className="h-screen flex">
-          {/* Left Panel */}
-          <div className="w-1/3 border-r bg-muted/50 flex flex-col">
-            <div className="p-4 border-b">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold">Multi-Model AI Studio</h2>
-                <div className="flex items-center space-x-2">
-                  <Badge variant="secondary">
-                    <Activity className="h-3 w-3 mr-1" />
-                    AI Orchestrator
-                  </Badge>
-                  <Button variant="ghost" size="sm" onClick={toggleDarkMode}>
-                    {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+    <AIPromptHook userId={currentUser.id}>
+      <div className={`min-h-screen bg-background ${isDarkMode ? 'dark' : ''}`}>
+        <Navigation />
+        
+        <main className="pt-16">
+          <div className="h-screen flex">
+            {/* Left Panel */}
+            <div className="w-1/3 border-r bg-muted/50 flex flex-col">
+              <div className="p-4 border-b">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-semibold">Multi-Model AI Studio</h2>
+                  <div className="flex items-center space-x-2">
+                    <Badge variant="secondary">
+                      <Activity className="h-3 w-3 mr-1" />
+                      AI Orchestrator
+                    </Badge>
+                    <Button variant="ghost" size="sm" onClick={toggleDarkMode}>
+                      {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                    </Button>
+                  </div>
+                </div>
+                
+                {/* Mode Toggle */}
+                <div className="flex items-center space-x-2 mb-4">
+                  <Button
+                    variant={mode === 'prompt' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setMode('prompt')}
+                  >
+                    <MessageSquare className="h-4 w-4 mr-2" />
+                    AI Chat Mode
                   </Button>
+                  <Button
+                    variant={mode === 'visual' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setMode('visual')}
+                  >
+                    <Palette className="h-4 w-4 mr-2" />
+                    Visual Mode
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={toggleCollaboration}
+                    className={isCollaborationEnabled ? 'bg-green-100 border-green-300' : ''}
+                  >
+                    <Users className="h-4 w-4 mr-2" />
+                    Collab
+                  </Button>
+                </div>
+                
+                {/* Token Usage Display */}
+                <div className="mb-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center space-x-2">
+                      <Zap className="h-4 w-4 text-primary" />
+                      <span className="text-sm font-medium">Token Usage</span>
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => setIsUpgradeModalOpen(true)}
+                    >
+                      <CreditCard className="h-3 w-3 mr-1" />
+                      Upgrade
+                    </Button>
+                  </div>
+                  <div className="bg-muted/50 p-2 rounded-lg">
+                    <div className="flex items-center justify-between text-xs mb-1">
+                      <span>{tokenUsage?.tokensRemaining.toLocaleString()} tokens remaining</span>
+                      <span>{Math.round((tokenUsage?.tokensUsed || 0) / (tokenUsage?.tokensTotal || 1) * 100)}% used</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-1.5">
+                      <div 
+                        className="bg-primary h-1.5 rounded-full" 
+                        style={{ width: `${Math.round((tokenUsage?.tokensUsed || 0) / (tokenUsage?.tokensTotal || 1) * 100)}%` }}
+                      ></div>
+                    </div>
+                    <div className="flex items-center justify-between text-xs mt-1">
+                      <Badge variant="outline" className="text-xs">
+                        {plan.name} Plan
+                      </Badge>
+                      <span>{tokenUsage?.tokensTotal.toLocaleString()} total</span>
+                    </div>
+                  </div>
                 </div>
               </div>
               
-              {/* Mode Toggle */}
-              <div className="flex items-center space-x-2 mb-4">
-                <Button
-                  variant={mode === 'prompt' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setMode('prompt')}
-                >
-                  <MessageSquare className="h-4 w-4 mr-2" />
-                  AI Chat Mode
-                </Button>
-                <Button
-                  variant={mode === 'visual' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setMode('visual')}
-                >
-                  <Palette className="h-4 w-4 mr-2" />
-                  Visual Mode
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={toggleCollaboration}
-                  className={isCollaborationEnabled ? 'bg-green-100 border-green-300' : ''}
-                >
-                  <Users className="h-4 w-4 mr-2" />
-                  Collab
-                </Button>
-              </div>
-            </div>
-            
-            {mode === 'prompt' ? (
-              <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1">
-                <TabsList className="grid w-full grid-cols-5 mx-4 mt-2">
-                  <TabsTrigger value="chat" className="text-xs">
-                    <MessageSquare className="h-3 w-3 mr-1" />
-                    AI Chat
-                  </TabsTrigger>
-                  <TabsTrigger value="monitor" className="text-xs">
-                    <BarChart3 className="h-3 w-3 mr-1" />
-                    Monitor
-                  </TabsTrigger>
-                  <TabsTrigger value="chains" className="text-xs">
-                    <Workflow className="h-3 w-3 mr-1" />
-                    Chains
-                  </TabsTrigger>
-                  <TabsTrigger value="library" className="text-xs">
-                    <BookOpen className="h-3 w-3 mr-1" />
-                    Library
-                  </TabsTrigger>
-                  <TabsTrigger value="components" className="text-xs">
-                    <Puzzle className="h-3 w-3 mr-1" />
-                    Components
-                  </TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="chat" className="flex-1 flex flex-col m-0">
-                  <EnhancedAIChat
-                    projectId={projectId}
-                    userTier={userTier}
-                    framework={framework}
-                    onCodeGenerated={handleCodeGenerated}
-                  />
-                </TabsContent>
-                
-                <TabsContent value="monitor" className="flex-1 m-0 p-4">
-                  <AIJobMonitor 
-                    projectId={projectId}
-                    showStats={true}
-                  />
-                </TabsContent>
-                
-                <TabsContent value="chains" className="flex-1 m-0 p-4">
-                  <PromptChainBuilder
-                    projectId={projectId}
-                    onChainExecute={handleChainExecute}
-                  />
-                </TabsContent>
-                
-                <TabsContent value="library" className="flex-1 m-0">
-                  <PromptLibrary
-                    onSelectPrompt={handleSelectPrompt}
-                  />
-                </TabsContent>
-                
-                <TabsContent value="components" className="flex-1 m-0">
+              {mode === 'prompt' ? (
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1">
+                  <TabsList className="grid w-full grid-cols-5 mx-4 mt-2">
+                    <TabsTrigger value="chat" className="text-xs">
+                      <MessageSquare className="h-3 w-3 mr-1" />
+                      AI Chat
+                    </TabsTrigger>
+                    <TabsTrigger value="monitor" className="text-xs">
+                      <BarChart3 className="h-3 w-3 mr-1" />
+                      Monitor
+                    </TabsTrigger>
+                    <TabsTrigger value="chains" className="text-xs">
+                      <Workflow className="h-3 w-3 mr-1" />
+                      Chains
+                    </TabsTrigger>
+                    <TabsTrigger value="library" className="text-xs">
+                      <BookOpen className="h-3 w-3 mr-1" />
+                      Library
+                    </TabsTrigger>
+                    <TabsTrigger value="components" className="text-xs">
+                      <Puzzle className="h-3 w-3 mr-1" />
+                      Components
+                    </TabsTrigger>
+                  </TabsList>
+                  
+                  <TabsContent value="chat" className="flex-1 flex flex-col m-0">
+                    <EnhancedAIChat
+                      projectId={projectId}
+                      userTier={userTier}
+                      framework={framework}
+                      onCodeGenerated={handleCodeGenerated}
+                    />
+                  </TabsContent>
+                  
+                  <TabsContent value="monitor" className="flex-1 m-0 p-4">
+                    <AIJobMonitor 
+                      projectId={projectId}
+                      showStats={true}
+                    />
+                  </TabsContent>
+                  
+                  <TabsContent value="chains" className="flex-1 m-0 p-4">
+                    <PromptChainBuilder
+                      projectId={projectId}
+                      onChainExecute={handleChainExecute}
+                    />
+                  </TabsContent>
+                  
+                  <TabsContent value="library" className="flex-1 m-0">
+                    <PromptLibrary
+                      onSelectPrompt={handleSelectPrompt}
+                    />
+                  </TabsContent>
+                  
+                  <TabsContent value="components" className="flex-1 m-0">
+                    <VisualComponentGallery
+                      onComponentSelect={handleComponentSelect}
+                      framework={framework}
+                    />
+                  </TabsContent>
+                </Tabs>
+              ) : (
+                <div className="flex-1">
                   <VisualComponentGallery
                     onComponentSelect={handleComponentSelect}
                     framework={framework}
                   />
-                </TabsContent>
-              </Tabs>
-            ) : (
-              <div className="flex-1">
-                <VisualComponentGallery
-                  onComponentSelect={handleComponentSelect}
-                  framework={framework}
-                />
-              </div>
-            )}
-          </div>
-
-          {/* Right Panel */}
-          <div className="flex-1 flex flex-col">
-            <div className="p-4 border-b flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <h2 className="text-lg font-semibold">Development Environment</h2>
-                <Badge variant="outline">Live Preview</Badge>
-                <Badge variant="outline">{framework}</Badge>
-                <Badge variant="secondary">Multi-Model AI</Badge>
-                {deploymentUrl && (
-                  <Badge variant="default" className="bg-green-600">
-                    <Globe className="h-3 w-3 mr-1" />
-                    Live
-                  </Badge>
-                )}
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                {isCollaborationEnabled && (
-                  <Badge variant="outline" className="animate-pulse bg-green-100 border-green-300">
-                    <Users className="h-3 w-3 mr-1" />
-                    3 Collaborators
-                  </Badge>
-                )}
-                <Button variant="outline" size="sm" onClick={() => setRightPanelTab('framework')}>
-                  <Settings className="h-4 w-4 mr-2" />
-                  Settings
-                </Button>
-              </div>
+                </div>
+              )}
             </div>
 
-            <Tabs value={rightPanelTab} onValueChange={setRightPanelTab} className="flex-1">
-              <TabsList className="grid w-full grid-cols-10">
-                <TabsTrigger value="preview">
-                  <Eye className="h-4 w-4 mr-2" />
-                  Preview
-                </TabsTrigger>
-                <TabsTrigger value="code">
-                  <Code className="h-4 w-4 mr-2" />
-                  Code
-                </TabsTrigger>
-                <TabsTrigger value="files">
-                  <FileText className="h-4 w-4 mr-2" />
-                  Files
-                </TabsTrigger>
-                <TabsTrigger value="history">
-                  <GitBranch className="h-4 w-4 mr-2" />
-                  History
-                </TabsTrigger>
-                <TabsTrigger value="tasks">
-                  <Layers className="h-4 w-4 mr-2" />
-                  Tasks
-                </TabsTrigger>
-                <TabsTrigger value="deploy">
-                  <Globe className="h-4 w-4 mr-2" />
-                  Deploy
-                </TabsTrigger>
-                <TabsTrigger value="mobile">
-                  <Smartphone className="h-4 w-4 mr-2" />
-                  Mobile
-                </TabsTrigger>
-                <TabsTrigger value="collab">
-                  <Users className="h-4 w-4 mr-2" />
-                  Collab
-                </TabsTrigger>
-                <TabsTrigger value="memory">
-                  <Brain className="h-4 w-4 mr-2" />
-                  Memory
-                </TabsTrigger>
-                <TabsTrigger value="framework">
-                  <Settings className="h-4 w-4 mr-2" />
-                  Settings
-                </TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="preview" className="flex-1 m-0">
-                <DevicePreview code={generatedCode} />
-              </TabsContent>
-              
-              <TabsContent value="code" className="flex-1 m-0">
-                <div className="h-full flex flex-col">
-                  <div className="p-4 border-b flex items-center justify-between">
-                    <span className="text-sm font-medium">Code Editor</span>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleCodeSelect(generatedCode)}
-                    >
-                      <HelpCircle className="h-4 w-4 mr-2" />
-                      Explain Code
-                    </Button>
-                  </div>
-                  <div className="flex-1">
-                    <MonacoEditor
-                      value={generatedCode}
-                      onChange={setGeneratedCode}
-                      language="html"
-                    />
-                  </div>
+            {/* Right Panel */}
+            <div className="flex-1 flex flex-col">
+              <div className="p-4 border-b flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <h2 className="text-lg font-semibold">Development Environment</h2>
+                  <Badge variant="outline">Live Preview</Badge>
+                  <Badge variant="outline">{framework}</Badge>
+                  <Badge variant="secondary">Multi-Model AI</Badge>
+                  {deploymentUrl && (
+                    <Badge variant="default" className="bg-green-600">
+                      <Globe className="h-3 w-3 mr-1" />
+                      Live
+                    </Badge>
+                  )}
                 </div>
-              </TabsContent>
-              
-              <TabsContent value="files" className="flex-1 m-0">
-                <SmartFileExplorer
-                  onFileSelect={handleFileSelect}
-                  onPromptInFile={handlePromptInFile}
-                  framework={framework}
-                />
-              </TabsContent>
-              
-              <TabsContent value="history" className="flex-1 m-0 p-4">
-                <FileDiffViewer
-                  fileName="index.html"
-                  versions={fileVersions}
-                  currentContent={generatedCode}
-                  onRevert={handleFileRevert}
-                  onDuplicate={handleFileDuplicate}
-                />
-              </TabsContent>
-              
-              <TabsContent value="tasks" className="flex-1 m-0 p-4">
-                <TaskQueue 
-                  projectId={projectId} 
-                  onTaskComplete={handleTaskComplete}
-                />
-              </TabsContent>
-              
-              <TabsContent value="deploy" className="flex-1 m-0 p-4">
-                <OneClickPreviewDeploy
-                  projectCode={generatedCode}
-                  projectName={projectName}
-                  onDeploymentUpdate={handleDeploymentUpdate}
-                />
-              </TabsContent>
-              
-              <TabsContent value="mobile" className="flex-1 m-0 p-4">
-                <EnhancedMobileExport
-                  projectCode={generatedCode}
-                  projectName={projectName}
-                  framework={framework}
-                  webUrl={deploymentUrl || undefined}
-                />
-              </TabsContent>
-              
-              <TabsContent value="collab" className="flex-1 m-0 p-4">
-                <RealtimeCollaboration
-                  projectId={projectId}
-                  currentUser={currentUser}
-                  onCodeChange={handleCodeGenerated}
-                />
-              </TabsContent>
-              
-              <TabsContent value="memory" className="flex-1 m-0 p-4">
-                <ProjectContextMemory
-                  projectId={projectId}
-                  onMemoryUpdate={handleMemoryUpdate}
-                />
-              </TabsContent>
-              
-              <TabsContent value="framework" className="flex-1 m-0 p-4">
-                <FrameworkSwitcher
-                  currentFramework={framework}
-                  onFrameworkChange={handleFrameworkChange}
-                />
-              </TabsContent>
-            </Tabs>
-          </div>
-        </div>
-      </main>
+                
+                <div className="flex items-center space-x-2">
+                  {isCollaborationEnabled && (
+                    <Badge variant="outline" className="animate-pulse bg-green-100 border-green-300">
+                      <Users className="h-3 w-3 mr-1" />
+                      3 Collaborators
+                    </Badge>
+                  )}
+                  <Button variant="outline" size="sm" onClick={() => setRightPanelTab('framework')}>
+                    <Settings className="h-4 w-4 mr-2" />
+                    Settings
+                  </Button>
+                </div>
+              </div>
 
-      {/* Code Explainer Modal */}
-      {showCodeExplainer && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <EnhancedCodeExplainer
-            selectedCode={selectedCode}
-            onClose={() => setShowCodeExplainer(false)}
-            language="html"
-            aiModel={selectedAIModel}
-          />
-        </div>
-      )}
-    </div>
+              <Tabs value={rightPanelTab} onValueChange={setRightPanelTab} className="flex-1">
+                <TabsList className="grid w-full grid-cols-10">
+                  <TabsTrigger value="preview">
+                    <Eye className="h-4 w-4 mr-2" />
+                    Preview
+                  </TabsTrigger>
+                  <TabsTrigger value="code">
+                    <Code className="h-4 w-4 mr-2" />
+                    Code
+                  </TabsTrigger>
+                  <TabsTrigger value="files">
+                    <FileText className="h-4 w-4 mr-2" />
+                    Files
+                  </TabsTrigger>
+                  <TabsTrigger value="history">
+                    <GitBranch className="h-4 w-4 mr-2" />
+                    History
+                  </TabsTrigger>
+                  <TabsTrigger value="tasks">
+                    <Layers className="h-4 w-4 mr-2" />
+                    Tasks
+                  </TabsTrigger>
+                  <TabsTrigger value="deploy">
+                    <Globe className="h-4 w-4 mr-2" />
+                    Deploy
+                  </TabsTrigger>
+                  <TabsTrigger value="mobile">
+                    <Smartphone className="h-4 w-4 mr-2" />
+                    Mobile
+                  </TabsTrigger>
+                  <TabsTrigger value="collab">
+                    <Users className="h-4 w-4 mr-2" />
+                    Collab
+                  </TabsTrigger>
+                  <TabsTrigger value="memory">
+                    <Brain className="h-4 w-4 mr-2" />
+                    Memory
+                  </TabsTrigger>
+                  <TabsTrigger value="framework">
+                    <Settings className="h-4 w-4 mr-2" />
+                    Framework
+                  </TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="preview" className="flex-1 m-0">
+                  <DevicePreview code={generatedCode} />
+                </TabsContent>
+                
+                <TabsContent value="code" className="flex-1 m-0">
+                  <div className="h-full flex flex-col">
+                    <div className="p-4 border-b flex items-center justify-between">
+                      <span className="text-sm font-medium">Code Editor</span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleCodeSelect(generatedCode)}
+                      >
+                        <HelpCircle className="h-4 w-4 mr-2" />
+                        Explain Code
+                      </Button>
+                    </div>
+                    <div className="flex-1">
+                      <MonacoEditor
+                        value={generatedCode}
+                        onChange={setGeneratedCode}
+                        language="html"
+                      />
+                    </div>
+                  </div>
+                </TabsContent>
+                
+                <TabsContent value="files" className="flex-1 m-0">
+                  <SmartFileExplorer
+                    onFileSelect={handleFileSelect}
+                    onPromptInFile={handlePromptInFile}
+                    framework={framework}
+                  />
+                </TabsContent>
+                
+                <TabsContent value="history" className="flex-1 m-0 p-4">
+                  <FileDiffViewer
+                    fileName="index.html"
+                    versions={fileVersions}
+                    currentContent={generatedCode}
+                    onRevert={handleFileRevert}
+                    onDuplicate={handleFileDuplicate}
+                  />
+                </TabsContent>
+                
+                <TabsContent value="tasks" className="flex-1 m-0 p-4">
+                  <TaskQueue 
+                    projectId={projectId} 
+                    onTaskComplete={handleTaskComplete}
+                  />
+                </TabsContent>
+                
+                <TabsContent value="deploy" className="flex-1 m-0 p-4">
+                  <OneClickPreviewDeploy
+                    projectCode={generatedCode}
+                    projectName={projectName}
+                    onDeploymentUpdate={handleDeploymentUpdate}
+                  />
+                </TabsContent>
+                
+                <TabsContent value="mobile" className="flex-1 m-0 p-4">
+                  <EnhancedMobileExport
+                    projectCode={generatedCode}
+                    projectName={projectName}
+                    framework={framework}
+                    webUrl={deploymentUrl || undefined}
+                  />
+                </TabsContent>
+                
+                <TabsContent value="collab" className="flex-1 m-0 p-4">
+                  <RealtimeCollaboration
+                    projectId={projectId}
+                    currentUser={currentUser}
+                    onCodeChange={handleCodeGenerated}
+                  />
+                </TabsContent>
+                
+                <TabsContent value="memory" className="flex-1 m-0 p-4">
+                  <ProjectContextMemory
+                    projectId={projectId}
+                    onMemoryUpdate={handleMemoryUpdate}
+                  />
+                </TabsContent>
+                
+                <TabsContent value="framework" className="flex-1 m-0 p-4">
+                  <FrameworkSwitcher
+                    currentFramework={framework}
+                    onFrameworkChange={handleFrameworkChange}
+                  />
+                </TabsContent>
+              </Tabs>
+            </div>
+          </div>
+        </main>
+
+        {/* Code Explainer Modal */}
+        {showCodeExplainer && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <EnhancedCodeExplainer
+              selectedCode={selectedCode}
+              onClose={() => setShowCodeExplainer(false)}
+              language="html"
+              aiModel={selectedAIModel}
+            />
+          </div>
+        )}
+
+        {/* Upgrade Plan Modal */}
+        <UpgradePlanModal
+          isOpen={isUpgradeModalOpen}
+          onClose={() => setIsUpgradeModalOpen(false)}
+          currentPlanId={planId}
+          onUpgrade={handleUpgrade}
+        />
+      </div>
+    </AIPromptHook>
   );
 }
+
+export { EnhancedDemoPageV3 }
