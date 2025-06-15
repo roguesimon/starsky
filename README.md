@@ -1,19 +1,73 @@
 # Starsky AI - AI-Powered No-Code Web App Builder
 
-A comprehensive Next.js application that replicates the functionality of modern AI-powered web development platforms. Build beautiful, production-ready web applications using natural language descriptions.
+A comprehensive Next.js application that replicates the functionality of modern AI-powered web development platforms. Build beautiful, production-ready web applications using natural language descriptions with **multiple specialized AI models**.
 
 ## 🌟 Features Overview
 
-### 🤖 Core AI Functionality
-- **AI-Powered Development**: Describe your app in plain English and watch it come to life
-- **Dual AI Models**: 
-  - `starsky-01`: Free tier AI model for basic applications
-  - `starsky-pro`: Advanced AI model with enhanced capabilities
-- **Multi-Prompt Task Handling**: Stack multiple prompts and execute them sequentially
-- **Real-time Code Generation**: Automatic HTML, CSS, and JavaScript generation
-- **AI Console Logs**: Real-time AI processing logs and debug assistance
-- **Smart Prompt Autocomplete**: AI-powered suggestions based on context and framework
-- **Code Explanation**: AI explains selected code with concepts and documentation links
+### 🤖 Multi-Model AI System
+- **AI Orchestration**: Intelligent routing of tasks to specialized AI models
+- **7 Specialized AI Models**: Each optimized for specific development tasks
+- **Smart Model Selection**: Automatic prompt classification and optimal model routing
+- **Real-Time Monitoring**: Live tracking of AI model executions and performance
+- **Cost Optimization**: Token usage tracking and budget management across models
+- **Streaming Support**: Real-time response generation with WebSocket connections
+
+#### **🔍 GPT-4o (OpenAI) - Core Developer & Architect**
+- **Role**: Primary code generation and project architecture
+- **Capabilities**: Project scaffolding, component generation, natural language UX
+- **Use Cases**: Complete app generation, complex logic implementation, copywriting
+- **Availability**: Free and Pro tiers
+
+#### **🧠 Claude 3 (Anthropic) - Thought Partner & Safety Advisor**
+- **Role**: Human-like reasoning and business logic verification
+- **Capabilities**: Prompt clarification, ethical guardrails, UX tone improvement
+- **Use Cases**: Requirements refinement, business logic validation, safety checks
+- **Availability**: Pro and Enterprise tiers
+
+#### **📦 Gemini 1.5 (Google) - Data Integration & Cloud Expert**
+- **Role**: Backend and cloud services specialist
+- **Capabilities**: API integration, database optimization, Google Cloud Platform
+- **Use Cases**: Firebase setup, API connections, cloud deployment configurations
+- **Availability**: Free and Pro tiers
+
+#### **🛠️ Command R+ (Cohere) - Debugger & Optimizer**
+- **Role**: Performance tuning and error resolution
+- **Capabilities**: Code optimization, security analysis, runtime error fixing
+- **Use Cases**: Bug fixes, performance improvements, security audits
+- **Availability**: Pro and Enterprise tiers
+
+#### **📈 Mistral 8x - Lightweight Assistant**
+- **Role**: Fast responses and privacy-first processing
+- **Capabilities**: Simple completions, boilerplate generation, quick suggestions
+- **Use Cases**: Auto-complete, code snippets, offline processing
+- **Availability**: All tiers
+
+#### **🤖 LLaVA - UI/UX Visual Assistant** *(Coming Soon)*
+- **Role**: Visual design analysis and generation
+- **Capabilities**: Screenshot analysis, mockup generation, UI pattern recognition
+- **Use Cases**: Design-to-code, visual feedback, component layout optimization
+- **Availability**: Pro and Enterprise tiers
+
+#### **🔐 Whisper (OpenAI) - Audio Transcription** *(Coming Soon)*
+- **Role**: Voice-to-code functionality
+- **Capabilities**: Speech recognition, voice commands, accessibility support
+- **Use Cases**: Voice prompts, hands-free coding, accessibility features
+- **Availability**: Pro and Enterprise tiers
+
+### 🎯 Intelligent AI Orchestration
+- **Automatic Prompt Classification**: AI analyzes prompts to determine optimal model
+- **Dynamic Model Routing**: Tasks automatically routed to most suitable AI model
+- **Fallback Systems**: Graceful degradation when primary models are unavailable
+- **Load Balancing**: Distribute requests across models for optimal performance
+- **Context Preservation**: Maintain conversation context across different models
+
+### 📊 Advanced AI Monitoring & Analytics
+- **Real-Time Dashboard**: Live monitoring of all AI model executions
+- **Performance Metrics**: Track response times, success rates, and token usage
+- **Cost Analysis**: Detailed breakdown of costs per model and per project
+- **Usage Statistics**: Comprehensive analytics on model usage patterns
+- **Export Capabilities**: Download detailed reports and usage logs
+- **Alert System**: Notifications for budget limits and performance issues
 
 ### 🎨 Development Environment
 - **Live Code Editor**: Monaco-based editor with IntelliSense and syntax highlighting
@@ -32,7 +86,7 @@ A comprehensive Next.js application that replicates the functionality of modern 
 - **Advanced Search & Filter**: Search with sorting, filtering, and quick filters
 - **Grid/List Views**: Toggle between visual grid and detailed list views
 - **Project Actions**: Duplicate, rename, delete, export, star, and share projects
-- **Project Context Memory**: AI remembers project patterns and preferences
+- **AI Project Memory**: AI remembers project patterns and preferences across models
 - **Project Notes**: Encrypted private notes with templates and auto-save
 
 ### 🧩 Template & Plugin System
@@ -51,7 +105,8 @@ A comprehensive Next.js application that replicates the functionality of modern 
 - **Collaboration Panel**: Centralized team management interface
 
 ### 🔄 Version Control & History
-- **Prompt History**: Complete history of all AI prompts and responses
+- **AI Conversation History**: Complete history of all AI interactions across models
+- **Model Attribution**: Track which AI model handled each response
 - **Chat History Panel**: Manage conversation history with favorites and labels
 - **Version Rollback**: Restore previous versions of your project
 - **Favorite Prompts**: Save and reuse successful prompts
@@ -72,13 +127,14 @@ A comprehensive Next.js application that replicates the functionality of modern 
 - **Role-based Access**: Granular permission system
 - **Data Privacy**: SOC 2 compliant security measures
 - **API Security**: Rate limiting and secure API endpoints
+- **Model Privacy**: Secure API key management for all AI providers
 
 ### 💳 Subscription Management
-- **Free Tier**: 5 projects, starsky-01 model, basic features
-- **Pro Tier**: Unlimited projects, starsky-pro model, advanced features
-- **Enterprise**: Custom solutions with dedicated support
+- **Free Tier**: 5 projects, GPT-4o + Gemini + Mistral models, basic features
+- **Pro Tier**: Unlimited projects, all AI models, advanced features
+- **Enterprise**: Custom solutions with dedicated support and custom AI training
 - **Stripe Integration**: Secure payment processing
-- **Usage Tracking**: Monitor API usage and project limits
+- **Usage Tracking**: Monitor API usage and project limits across all models
 
 ## 🏗️ Technical Architecture
 
@@ -92,18 +148,29 @@ A comprehensive Next.js application that replicates the functionality of modern 
 - **Code Editor**: Monaco Editor with IntelliSense
 - **Drag & Drop**: @dnd-kit for visual builder functionality
 
+### AI Integration Architecture
+- **AI Orchestrator**: Central coordination system for multiple AI models
+- **Model Router**: Intelligent prompt classification and model selection
+- **Streaming Engine**: Real-time response generation with WebSocket support
+- **Cost Tracker**: Token usage and cost monitoring across all models
+- **Fallback System**: Graceful degradation and error recovery
+- **Cache Layer**: Redis caching for frequently used AI responses
+
 ### Backend & Database
 - **Database**: Supabase (PostgreSQL) with real-time subscriptions
 - **Authentication**: Supabase Auth with OAuth providers
 - **API**: Next.js API routes with TypeScript
 - **File Storage**: AWS S3 or Cloudinary for assets
-- **Caching**: Redis for performance optimization
+- **Caching**: Redis for performance optimization and AI response caching
+- **Queue System**: Bull Queue for AI job processing
 
-### AI Integration
-- **Primary**: OpenAI GPT models for code generation
-- **Secondary**: Anthropic Claude for advanced reasoning
+### AI Provider Integration
+- **OpenAI**: GPT-4o and Whisper models with streaming support
+- **Anthropic**: Claude 3 for reasoning and safety
+- **Google**: Gemini 1.5 for cloud and data integration
+- **Cohere**: Command R+ for debugging and optimization
+- **Mistral AI**: Mistral 8x for lightweight processing
 - **Custom Models**: Starsky-01 and Starsky-Pro endpoints
-- **Prompt Engineering**: Optimized prompts for web development
 
 ### Deployment & DevOps
 - **Hosting**: Vercel (recommended) or Netlify
@@ -111,6 +178,7 @@ A comprehensive Next.js application that replicates the functionality of modern 
 - **Monitoring**: Sentry for error tracking
 - **Analytics**: PostHog and Google Analytics
 - **CI/CD**: GitHub Actions for automated deployment
+- **AI Monitoring**: Custom dashboard for AI model performance
 
 ## 🚀 Quick Start Guide
 
@@ -119,7 +187,12 @@ A comprehensive Next.js application that replicates the functionality of modern 
 - npm or yarn
 - Supabase account
 - Stripe account (for subscriptions)
-- OpenAI API key
+- AI Provider API keys:
+  - OpenAI API key (GPT-4o, Whisper)
+  - Anthropic API key (Claude 3)
+  - Google AI API key (Gemini 1.5)
+  - Cohere API key (Command R+)
+  - Mistral API key (Mistral 8x)
 
 ### Installation Steps
 
@@ -137,7 +210,7 @@ A comprehensive Next.js application that replicates the functionality of modern 
 3. **Environment setup**
    ```bash
    cp .env.example .env.local
-   # Edit .env.local with your actual values
+   # Edit .env.local with your actual values including all AI provider keys
    ```
 
 4. **Database setup**
@@ -145,14 +218,22 @@ A comprehensive Next.js application that replicates the functionality of modern 
    - Run the database migrations
    - Configure authentication providers
 
-5. **Start development server**
+5. **AI Provider Setup**
+   - Configure OpenAI API key for GPT-4o
+   - Set up Anthropic API key for Claude 3
+   - Configure Google AI API key for Gemini 1.5
+   - Set up Cohere API key for Command R+
+   - Configure Mistral API key for Mistral 8x
+
+6. **Start development server**
    ```bash
    npm run dev
    ```
 
-6. **Access the application**
+7. **Access the application**
    - Open http://localhost:3000
    - Create an account or sign in
+   - Try the Multi-AI Demo at `/demo-v3`
    - Start building your first AI-powered app!
 
 ## 🗄️ Database Schema
@@ -167,6 +248,7 @@ CREATE TABLE public.profiles (
   full_name TEXT,
   avatar_url TEXT,
   subscription_tier TEXT DEFAULT 'free',
+  ai_usage_limits JSONB DEFAULT '{}',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   PRIMARY KEY (id)
@@ -188,110 +270,73 @@ CREATE TABLE public.projects (
   github_repo TEXT,
   framework TEXT DEFAULT 'nextjs',
   theme_config JSONB,
+  ai_model_preferences JSONB DEFAULT '{}',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 ```
 
-#### `folders`
+#### `ai_conversations`
 ```sql
-CREATE TABLE public.folders (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-  name TEXT NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-```
-
-#### `collaborators`
-```sql
-CREATE TABLE public.collaborators (
+CREATE TABLE public.ai_conversations (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-  role TEXT NOT NULL CHECK (role IN ('owner', 'editor', 'viewer')),
-  invited_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  accepted_at TIMESTAMP WITH TIME ZONE
-);
-```
-
-#### `prompt_history`
-```sql
-CREATE TABLE public.prompt_history (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  model_used TEXT NOT NULL,
   prompt TEXT NOT NULL,
   response TEXT,
+  prompt_type TEXT,
+  tokens_used INTEGER DEFAULT 0,
+  cost DECIMAL(10,6) DEFAULT 0,
+  duration_ms INTEGER DEFAULT 0,
+  confidence_score DECIMAL(3,2),
   is_favorite BOOLEAN DEFAULT false,
-  label TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 ```
 
-#### `project_notes`
+#### `ai_job_logs`
 ```sql
-CREATE TABLE public.project_notes (
+CREATE TABLE public.ai_job_logs (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-  content TEXT,
-  is_encrypted BOOLEAN DEFAULT true,
+  project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
+  job_id TEXT UNIQUE NOT NULL,
+  model_used TEXT NOT NULL,
+  prompt_type TEXT NOT NULL,
+  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'running', 'completed', 'failed')),
+  tokens_used INTEGER DEFAULT 0,
+  cost DECIMAL(10,6) DEFAULT 0,
+  duration_ms INTEGER DEFAULT 0,
+  error_message TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  completed_at TIMESTAMP WITH TIME ZONE
+);
+```
+
+#### `ai_usage_tracking`
+```sql
+CREATE TABLE public.ai_usage_tracking (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  model_id TEXT NOT NULL,
+  tokens_used INTEGER NOT NULL,
+  cost DECIMAL(10,6) NOT NULL,
+  request_type TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+```
+
+#### `model_preferences`
+```sql
+CREATE TABLE public.model_preferences (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
+  preferred_models JSONB DEFAULT '{}',
+  auto_select_enabled BOOLEAN DEFAULT true,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-```
-
-#### `ai_logs`
-```sql
-CREATE TABLE public.ai_logs (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-  message TEXT NOT NULL,
-  type TEXT NOT NULL CHECK (type IN ('info', 'warning', 'error', 'success')),
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-```
-
-#### `tasks`
-```sql
-CREATE TABLE public.tasks (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-  prompt TEXT NOT NULL,
-  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'running', 'completed', 'failed')),
-  result TEXT,
-  error TEXT,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-```
-
-#### `templates`
-```sql
-CREATE TABLE public.templates (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  name TEXT NOT NULL,
-  description TEXT,
-  category TEXT NOT NULL,
-  preview_image TEXT,
-  code TEXT NOT NULL,
-  tags TEXT[],
-  is_premium BOOLEAN DEFAULT false,
-  created_by UUID REFERENCES auth.users(id),
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-```
-
-#### `usage_tracking`
-```sql
-CREATE TABLE public.usage_tracking (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-  resource_type TEXT NOT NULL,
-  amount INTEGER DEFAULT 1,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 ```
 
@@ -300,365 +345,259 @@ All tables have RLS enabled with policies ensuring users can only access their o
 
 ## 🎯 Core Components
 
-### Enhanced Dashboard (`components/enhanced-dashboard-page.tsx`)
+### AI Orchestration Components
+
+#### **AI Orchestrator (`lib/ai-orchestrator.ts`)**
+- **Purpose**: Central coordination system for multiple AI models
+- **Features**: Job queuing, model routing, cost tracking, error handling
+- **Methods**: `processRequest()`, `getJobLogs()`, `getUsageStats()`
+
+#### **AI Models Library (`lib/ai-models.ts`)**
+- **Purpose**: Model definitions, capabilities, and routing logic
+- **Features**: Model metadata, cost calculation, prompt classification
+- **Functions**: `getOptimalModel()`, `classifyPrompt()`, `getModelBySpecialty()`
+
+#### **Enhanced AI Chat (`components/enhanced-ai-chat.tsx`)**
+- **Purpose**: Multi-model chat interface with intelligent routing
+- **Features**: Model selection, streaming responses, conversation history
+- **Props**: `projectId`, `userTier`, `onCodeGenerated`
+
+#### **AI Model Selector (`components/ai-model-selector.tsx`)**
+- **Purpose**: Visual interface for model selection and comparison
+- **Features**: Model comparison, auto-select toggle, cost display
+- **Props**: `selectedModel`, `onModelChange`, `userTier`, `currentPrompt`
+
+#### **AI Job Monitor (`components/ai-job-monitor.tsx`)**
+- **Purpose**: Real-time monitoring of AI model executions
+- **Features**: Live job tracking, performance metrics, usage analytics
+- **Props**: `projectId`, `showStats`
+
+### Enhanced Demo Pages
+
+#### **Enhanced Demo Page V3 (`components/enhanced-demo-page-v3.tsx`)**
+- **Purpose**: Showcase multi-model AI capabilities
+- **Features**: AI orchestration, model monitoring, advanced chat interface
+- **Route**: `/demo-v3`
+
+#### **Enhanced Demo Page V2 (`components/enhanced-demo-page-v2.tsx`)**
+- **Purpose**: Advanced development environment with framework switching
+- **Features**: Visual builder, framework switcher, comprehensive tooling
+- **Route**: `/demo`
+
+### Project Management Components
+
+#### **Enhanced Dashboard (`components/enhanced-dashboard-page.tsx`)**
 - **Purpose**: Main dashboard with project selection and creation
-- **Features**: Project grid, statistics, search, folders
+- **Features**: Project grid, statistics, AI usage tracking
 - **Props**: None (manages routing internally)
 
-### Enhanced Demo Page V2 (`components/enhanced-demo-page-v2.tsx`)
-- **Purpose**: Advanced development environment with all features
-- **Features**: Multi-mode interface, framework switching, AI chat, visual builder
-- **Props**: None (comprehensive state management)
-
-### Projects Dashboard (`components/projects-dashboard.tsx`)
+#### **Projects Dashboard (`components/projects-dashboard.tsx`)**
 - **Purpose**: Comprehensive project management interface
-- **Features**: Grid/list view, advanced search, statistics cards, folder management
+- **Features**: Grid/list view, advanced search, AI model usage stats
 - **Props**: `onSelectProject`, `onCreateProject`
 
-### AI Prompt Autocomplete (`components/ai-prompt-autocomplete.tsx`)
-- **Purpose**: Smart prompt suggestions based on context
-- **Features**: Framework-specific suggestions, keyboard navigation, categories
-- **Props**: `value`, `onChange`, `onSuggestionSelect`, `framework`
+### Development Tools
 
-### Visual Builder (`components/visual-builder.tsx`)
-- **Purpose**: Drag-and-drop component builder
-- **Features**: Component library, property editor, live code generation
-- **Props**: `onCodeChange`, `framework`
-
-### Framework Switcher (`components/framework-switcher.tsx`)
-- **Purpose**: Switch between different web frameworks
-- **Features**: Framework comparison, difficulty indicators, feature lists
-- **Props**: `currentFramework`, `onFrameworkChange`
-
-### Smart File Explorer (`components/smart-file-explorer.tsx`)
+#### **Smart File Explorer (`components/smart-file-explorer.tsx`)**
 - **Purpose**: Advanced file management with AI integration
-- **Features**: File tree, code editor, AI prompts in files, context menus
+- **Features**: File tree, code editor, AI prompts in files, model selection
 - **Props**: `onFileSelect`, `onPromptInFile`, `framework`
 
-### Plugin Store (`components/plugin-store.tsx`)
-- **Purpose**: Browse and install plugins for extended functionality
-- **Features**: Categories, search, installation, setup code generation
-- **Props**: `onInstallPlugin`, `framework`
+#### **Visual Builder (`components/visual-builder.tsx`)**
+- **Purpose**: Drag-and-drop component builder with AI assistance
+- **Features**: Component library, property editor, AI-powered suggestions
+- **Props**: `onCodeChange`, `framework`
 
-### Chat History Panel (`components/chat-history-panel.tsx`)
-- **Purpose**: Manage conversation history with AI
-- **Features**: Search, favorites, labels, rerun prompts
-- **Props**: `projectId`, `onRerunPrompt`, `onEditPrompt`
-
-### Code Explainer (`components/code-explainer.tsx`)
-- **Purpose**: AI-powered code explanation and documentation
-- **Features**: Concept extraction, difficulty assessment, related docs
+#### **Code Explainer (`components/code-explainer.tsx`)**
+- **Purpose**: Multi-model code explanation and documentation
+- **Features**: Model-specific explanations, concept extraction, related docs
 - **Props**: `selectedCode`, `onClose`, `language`
 
-### Project Context Memory (`components/project-context-memory.tsx`)
-- **Purpose**: AI memory system for project patterns
-- **Features**: Pattern detection, preference learning, technology stack tracking
+### Collaboration & History
+
+#### **Chat History Panel (`components/chat-history-panel.tsx`)**
+- **Purpose**: Manage conversation history across all AI models
+- **Features**: Model attribution, search, favorites, rerun with different models
+- **Props**: `projectId`, `onRerunPrompt`, `onEditPrompt`
+
+#### **Project Context Memory (`components/project-context-memory.tsx`)**
+- **Purpose**: AI memory system for project patterns across models
+- **Features**: Cross-model learning, preference tracking, pattern detection
 - **Props**: `projectId`, `onMemoryUpdate`
-
-### Live Preview Deploy (`components/live-preview-deploy.tsx`)
-- **Purpose**: Automatic deployment with preview URLs
-- **Features**: Auto-deploy, custom domains, deployment history
-- **Props**: `projectCode`, `projectName`, `onDeploymentUpdate`
-
-### Mobile Export (`components/mobile-export.tsx`)
-- **Purpose**: Convert web projects to React Native apps
-- **Features**: Code conversion, configuration, Expo integration
-- **Props**: `projectCode`, `projectName`, `framework`
-
-### Task Queue (`components/task-queue.tsx`)
-- **Purpose**: Manage multiple AI prompts sequentially
-- **Features**: Queue management, task editing, execution status
-- **Props**: `projectId`, `onTaskComplete`
-
-### Template Gallery (`components/template-gallery.tsx`)
-- **Purpose**: Browse and select pre-built templates
-- **Features**: Categories, search, preview, premium templates
-- **Props**: `onSelectTemplate`
-
-### Collaboration Panel (`components/collaboration-panel.tsx`)
-- **Purpose**: Team collaboration features
-- **Features**: Invite users, role management, team chat, activity tracking
-- **Props**: `projectId`, `isOwner`
-
-### AI Console (`components/ai-console.tsx`)
-- **Purpose**: Real-time AI logs and debugging
-- **Features**: Log filtering, export, debug commands, real-time updates
-- **Props**: `projectId`, `onDebugRequest`
-
-### GitHub Integration (`components/github-integration.tsx`)
-- **Purpose**: Export projects to GitHub repositories
-- **Features**: OAuth, repository creation, auto-commit, deployment status
-- **Props**: `projectId`, `projectName`, `code`
-
-### Prompt History (`components/prompt-history.tsx`)
-- **Purpose**: Manage prompt history and favorites
-- **Features**: Search, labels, restore, rerun, export
-- **Props**: `projectId`, `onRestorePrompt`, `onRerunPrompt`
-
-### Project Notes (`components/project-notes.tsx`)
-- **Purpose**: Private encrypted notes per project
-- **Features**: Encryption, auto-save, templates, character count
-- **Props**: `projectId`
-
-### Device Preview (`components/device-preview.tsx`)
-- **Purpose**: Responsive preview with device simulation
-- **Features**: Multiple device sizes, rotation, dark mode, slow connection simulation
-- **Props**: `code`, `className`
-
-### Monaco Editor (`components/monaco-editor.tsx`)
-- **Purpose**: Advanced code editing with IntelliSense
-- **Features**: Syntax highlighting, themes, auto-completion, error detection
-- **Props**: `value`, `onChange`, `language`, `height`
 
 ## 🔧 API Endpoints
 
-### Authentication
-- `POST /api/auth/signup` - User registration with email/OAuth
-- `POST /api/auth/login` - User login with session management
-- `POST /api/auth/logout` - User logout and session cleanup
-- `GET /api/auth/session` - Get current session and user data
+### AI Model Management
+- `GET /api/ai/models` - List available AI models and capabilities
+- `POST /api/ai/generate` - Generate content using optimal AI model
+- `POST /api/ai/chat` - Multi-model chat with intelligent routing
+- `GET /api/ai/usage` - Get AI usage statistics across all models
+- `POST /api/ai/models/select` - Manually select AI model for task
+- `GET /api/ai/jobs` - List AI job execution history
+- `POST /api/ai/jobs/[id]/cancel` - Cancel running AI job
 
-### Projects
-- `GET /api/projects` - List user projects with filtering
-- `POST /api/projects` - Create new project with framework selection
-- `GET /api/projects/[id]` - Get specific project with full details
-- `PUT /api/projects/[id]` - Update project code, settings, and metadata
-- `DELETE /api/projects/[id]` - Delete project and associated data
-- `POST /api/projects/[id]/duplicate` - Duplicate project with new ID
-- `POST /api/projects/[id]/star` - Toggle project star status
-- `GET /api/projects/[id]/history` - Get project version history
+### Model-Specific Endpoints
+- `POST /api/ai/gpt4o` - Direct GPT-4o integration for core development
+- `POST /api/ai/claude` - Claude 3 for reasoning and safety checks
+- `POST /api/ai/gemini` - Gemini 1.5 for cloud and data integration
+- `POST /api/ai/command-r` - Command R+ for debugging and optimization
+- `POST /api/ai/mistral` - Mistral 8x for lightweight processing
+- `POST /api/ai/llava` - LLaVA for visual analysis (coming soon)
+- `POST /api/ai/whisper` - Whisper for audio transcription (coming soon)
 
-### AI Generation
-- `POST /api/generate` - Generate application from natural language prompt
-- `POST /api/generate/improve` - Improve existing code with AI suggestions
-- `POST /api/generate/debug` - Debug code issues with AI assistance
-- `POST /api/generate/explain` - Explain code with AI analysis
-- `GET /api/models` - List available AI models and capabilities
-- `POST /api/generate/autocomplete` - Get prompt suggestions
+### AI Analytics & Monitoring
+- `GET /api/analytics/ai-usage` - Detailed AI usage analytics
+- `GET /api/analytics/model-performance` - Model performance metrics
+- `GET /api/analytics/cost-breakdown` - Cost analysis per model
+- `POST /api/analytics/export` - Export AI usage reports
 
-### Collaboration
-- `GET /api/projects/[id]/collaborators` - List project collaborators
-- `POST /api/projects/[id]/collaborators` - Invite new collaborator
-- `PUT /api/projects/[id]/collaborators/[userId]` - Update collaborator role
-- `DELETE /api/projects/[id]/collaborators/[userId]` - Remove collaborator
-- `GET /api/projects/[id]/activity` - Get project activity feed
-- `POST /api/projects/[id]/chat` - Send team chat message
+### Enhanced Project Endpoints
+- `GET /api/projects/[id]/ai-history` - Get AI conversation history
+- `POST /api/projects/[id]/ai-memory` - Update AI project memory
+- `GET /api/projects/[id]/model-preferences` - Get user model preferences
+- `PUT /api/projects/[id]/model-preferences` - Update model preferences
 
-### Templates & Plugins
-- `GET /api/templates` - List available templates with filtering
-- `GET /api/templates/[id]` - Get specific template details
-- `POST /api/templates` - Create custom template from project
-- `GET /api/plugins` - List available plugins by category
-- `POST /api/plugins/[id]/install` - Install plugin with setup code
+## 🎨 AI Model Integration UI
 
-### File Management
-- `GET /api/projects/[id]/files` - Get project file structure
-- `POST /api/projects/[id]/files` - Create new file
-- `PUT /api/projects/[id]/files/[path]` - Update file content
-- `DELETE /api/projects/[id]/files/[path]` - Delete file
-- `POST /api/projects/[id]/files/[path]/prompt` - AI prompt in specific file
+### Model Selection Interface
+- **Visual Model Cards**: Each model displayed with icon, capabilities, and cost
+- **Auto-Select Toggle**: Enable/disable intelligent model routing
+- **Real-time Recommendations**: Suggest optimal model based on current prompt
+- **Tier-based Access**: Show available models based on subscription tier
 
-### Deployment & Export
-- `POST /api/deploy/github` - Deploy to GitHub Pages with OAuth
-- `POST /api/deploy/netlify` - Deploy to Netlify with API integration
-- `POST /api/deploy/vercel` - Deploy to Vercel with automatic setup
-- `POST /api/export/zip` - Export project as downloadable ZIP
-- `POST /api/export/mobile` - Convert to React Native project
-- `GET /api/deploy/[id]/status` - Get deployment status and URL
+### AI Conversation Interface
+- **Model Attribution**: Clear indication of which model handled each response
+- **Streaming Responses**: Real-time response generation with typing indicators
+- **Model Switching**: Ability to regenerate responses with different models
+- **Confidence Scores**: Display AI confidence levels and suggestions
 
-### Memory & Context
-- `GET /api/projects/[id]/memory` - Get AI project memory
-- `POST /api/projects/[id]/memory` - Update AI learning data
-- `GET /api/projects/[id]/patterns` - Get detected code patterns
-- `POST /api/projects/[id]/preferences` - Save user preferences
-
-### Notes & History
-- `GET /api/projects/[id]/notes` - Get encrypted project notes
-- `PUT /api/projects/[id]/notes` - Update project notes
-- `GET /api/projects/[id]/prompts` - Get prompt history
-- `POST /api/projects/[id]/prompts/[id]/favorite` - Toggle prompt favorite
-- `GET /api/projects/[id]/logs` - Get AI console logs
-
-### Usage & Billing
-- `GET /api/usage` - Get detailed usage statistics
-- `POST /api/billing/create-checkout` - Create Stripe checkout session
-- `POST /api/billing/manage-subscription` - Manage subscription portal
-- `POST /api/webhooks/stripe` - Handle Stripe webhook events
-- `GET /api/billing/invoices` - Get billing history
-
-## 🎨 Styling & Theming
-
-### Design System
-- **Primary Colors**: Blue gradient (#3B82F6 to #8B5CF6)
-- **Secondary Colors**: Teal accents (#14B8A6)
-- **Typography**: Inter font family with proper hierarchy
-- **Spacing**: 8px grid system for consistent spacing
-- **Shadows**: Layered shadow system for depth and elevation
-- **Animations**: Smooth transitions with Framer Motion
-
-### Component Styling
-- **Cards**: Rounded corners with subtle shadows and hover effects
-- **Buttons**: Multiple variants (default, outline, ghost) with loading states
-- **Inputs**: Consistent styling with focus states and validation
-- **Badges**: Color-coded status indicators with semantic meaning
-- **Navigation**: Sticky header with backdrop blur and gradient effects
-
-### Responsive Design
-- **Mobile First**: Optimized for mobile devices with progressive enhancement
-- **Breakpoints**: sm (640px), md (768px), lg (1024px), xl (1280px)
-- **Grid System**: CSS Grid and Flexbox for complex layouts
-- **Typography**: Responsive font sizes and line heights
-- **Touch Targets**: Minimum 44px touch targets for mobile
-
-### Dark Mode Support
-- **Theme Toggle**: Persistent theme selection with system preference detection
-- **Color Variables**: CSS custom properties for seamless theme switching
-- **Component Adaptation**: All components support both light and dark themes
-- **Code Editor**: Monaco editor theme synchronization
+### Monitoring Dashboard
+- **Live Job Tracking**: Real-time monitoring of AI model executions
+- **Performance Metrics**: Response times, success rates, token usage
+- **Cost Analytics**: Detailed cost breakdown per model and project
+- **Usage Patterns**: Visual analytics of model usage over time
 
 ## 🔒 Security Features
 
-### Authentication Security
-- **Supabase Auth**: Industry-standard authentication with JWT tokens
-- **OAuth Integration**: GitHub and Google sign-in with secure token handling
-- **Session Management**: Secure session handling with automatic refresh
-- **Password Security**: Bcrypt hashing with salt for password storage
+### AI Security
+- **API Key Management**: Secure storage and rotation of AI provider keys
+- **Rate Limiting**: Per-model rate limiting to prevent abuse
+- **Cost Controls**: Budget limits and alerts for AI usage
+- **Model Access Control**: Tier-based access to premium AI models
+- **Audit Logging**: Complete audit trail of all AI interactions
 
 ### Data Protection
-- **Row Level Security**: Database-level access control with Supabase RLS
-- **Encryption**: AES-256 encryption for sensitive data like project notes
-- **HTTPS Only**: All communications encrypted in transit with TLS
-- **CORS Protection**: Configured allowed origins and methods
-
-### API Security
-- **Rate Limiting**: Redis-based rate limiting to prevent abuse
-- **Input Validation**: Zod schema validation for all API endpoints
-- **SQL Injection Protection**: Parameterized queries and ORM usage
-- **XSS Prevention**: Content Security Policy headers and input sanitization
-
-### Privacy Controls
-- **Data Minimization**: Only collect necessary user data
-- **User Consent**: Clear consent mechanisms for data processing
-- **Data Portability**: Export user data in standard formats
-- **Right to Deletion**: Complete data removal on user request
+- **Conversation Encryption**: End-to-end encryption of AI conversations
+- **Model Privacy**: Ensure user data privacy across all AI providers
+- **Secure Prompts**: Sanitization and validation of user prompts
+- **Response Filtering**: Content filtering for inappropriate AI responses
 
 ## 📊 Analytics & Monitoring
 
-### User Analytics
-- **Google Analytics**: Page views, user behavior, and conversion tracking
-- **PostHog**: Product analytics, feature usage, and user journeys
-- **Custom Events**: Track specific user actions and feature adoption
-- **Conversion Tracking**: Monitor signup, upgrade, and retention rates
-
-### Error Monitoring
-- **Sentry Integration**: Real-time error tracking with stack traces
-- **Performance Monitoring**: Track Core Web Vitals and API response times
-- **Custom Logging**: Structured logging with Winston for debugging
-- **Alert System**: Slack/Discord notifications for critical errors
-
-### Performance Metrics
-- **Core Web Vitals**: LCP, FID, CLS monitoring with real user data
-- **API Response Times**: Track endpoint performance and bottlenecks
-- **Database Queries**: Monitor slow queries and optimization opportunities
-- **CDN Performance**: Asset delivery optimization and cache hit rates
+### AI-Specific Analytics
+- **Model Performance**: Track response quality and user satisfaction per model
+- **Cost Optimization**: Identify opportunities to reduce AI costs
+- **Usage Patterns**: Understand which models are most effective for different tasks
+- **Error Analysis**: Monitor and analyze AI model failures and errors
 
 ### Business Intelligence
-- **User Engagement**: Track feature usage and user retention
-- **Revenue Analytics**: Monitor subscription metrics and churn
-- **A/B Testing**: Feature flag system for controlled rollouts
-- **Cohort Analysis**: User behavior analysis over time
+- **AI ROI Tracking**: Measure return on investment for different AI models
+- **Feature Adoption**: Track usage of AI-powered features
+- **User Engagement**: Monitor how AI features impact user retention
+- **Conversion Analysis**: Understand how AI features drive subscriptions
 
 ## 🚀 Deployment Guide
 
-### Vercel Deployment (Recommended)
-1. Connect GitHub repository to Vercel dashboard
-2. Configure environment variables in project settings
-3. Enable automatic deployments on push to main branch
-4. Set up custom domain with SSL certificate
-5. Configure preview deployments for pull requests
+### AI Provider Setup
+1. **OpenAI Configuration**
+   - Set up OpenAI API key for GPT-4o and Whisper
+   - Configure organization ID and usage limits
+   - Enable streaming for real-time responses
 
-### Manual Deployment
+2. **Anthropic Setup**
+   - Configure Claude 3 API key
+   - Set up safety and content filtering
+   - Configure rate limits and quotas
+
+3. **Google AI Setup**
+   - Set up Gemini 1.5 API key
+   - Configure Google Cloud Platform integration
+   - Enable Firebase and other Google services
+
+4. **Cohere Configuration**
+   - Set up Command R+ API key
+   - Configure debugging and optimization features
+   - Set up performance monitoring
+
+5. **Mistral AI Setup**
+   - Configure Mistral 8x API key
+   - Set up lightweight processing options
+   - Configure offline capabilities
+
+### Environment Variables
 ```bash
-# Build the application
-npm run build
+# AI Provider Keys
+OPENAI_API_KEY=your_openai_key
+ANTHROPIC_API_KEY=your_anthropic_key
+GOOGLE_AI_API_KEY=your_google_ai_key
+COHERE_API_KEY=your_cohere_key
+MISTRAL_API_KEY=your_mistral_key
 
-# Start production server
-npm start
+# AI Configuration
+AI_ORCHESTRATOR_ENABLED=true
+AI_STREAMING_ENABLED=true
+AI_COST_TRACKING_ENABLED=true
+AI_FALLBACK_MODEL=gpt-4o
+
+# Rate Limiting
+AI_RATE_LIMIT_FREE_TIER=100
+AI_RATE_LIMIT_PRO_TIER=1000
+AI_RATE_LIMIT_ENTERPRISE_TIER=unlimited
 ```
 
-### Docker Deployment
-```dockerfile
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-RUN npm run build
-EXPOSE 3000
-CMD ["npm", "start"]
-```
+## 🧪 Testing AI Integration
 
-### Environment Configuration
-- Copy `.env.example` to `.env.local`
-- Fill in all required environment variables
-- Test locally before deploying to production
-- Use different configurations for staging and production environments
-
-### Performance Optimization
-- **Memory Allocation**: Increased Node.js memory limit to 4GB
-- **SWC Disabled**: Using Babel for compatibility in WebContainer
-- **Code Splitting**: Automatic route-based code splitting
-- **Image Optimization**: Next.js Image component with WebP support
-
-## 🧪 Testing
-
-### Unit Tests
+### AI Model Testing
 ```bash
-npm run test
+# Test individual AI models
+npm run test:ai:gpt4o
+npm run test:ai:claude
+npm run test:ai:gemini
+npm run test:ai:command-r
+npm run test:ai:mistral
+
+# Test AI orchestration
+npm run test:ai:orchestrator
+
+# Test model routing
+npm run test:ai:routing
 ```
 
-### Integration Tests
+### Integration Testing
 ```bash
-npm run test:integration
-```
+# Test multi-model conversations
+npm run test:ai:conversations
 
-### E2E Tests
-```bash
-npm run test:e2e
-```
+# Test cost tracking
+npm run test:ai:cost-tracking
 
-### Test Coverage
-```bash
-npm run test:coverage
+# Test performance monitoring
+npm run test:ai:monitoring
 ```
-
-### Testing Strategy
-- **Component Testing**: React Testing Library for UI components
-- **API Testing**: Jest for API endpoint testing
-- **E2E Testing**: Playwright for full user journey testing
-- **Visual Testing**: Chromatic for visual regression testing
 
 ## 🤝 Contributing
 
-### Development Workflow
-1. Fork the repository and create feature branch
-2. Make changes with proper TypeScript types
-3. Add tests for new functionality and bug fixes
-4. Ensure all tests pass and code quality checks pass
-5. Submit pull request with detailed description
+### AI Model Integration
+- Follow the established pattern for adding new AI models
+- Implement proper error handling and fallback mechanisms
+- Add comprehensive tests for new AI integrations
+- Update documentation for new model capabilities
 
-### Code Standards
-- **TypeScript**: Strict mode enabled with comprehensive typing
-- **ESLint**: Airbnb configuration with custom rules
-- **Prettier**: Consistent code formatting across the project
-- **Husky**: Pre-commit hooks for quality checks
-
-### Pull Request Process
-1. Update documentation for new features
-2. Add tests for bug fixes and new functionality
-3. Ensure CI/CD pipeline passes all checks
-4. Request review from maintainers
-5. Address feedback and merge when approved
+### Code Standards for AI Integration
+- **Type Safety**: All AI responses must be properly typed
+- **Error Handling**: Graceful degradation when AI models fail
+- **Cost Tracking**: All AI calls must include cost tracking
+- **Performance**: Monitor and optimize AI response times
 
 ## 📝 License
 
@@ -666,112 +605,81 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🆘 Support & Community
 
-### Documentation
-- **API Docs**: Comprehensive API documentation with examples
-- **Component Docs**: Storybook documentation for UI components
-- **Video Tutorials**: YouTube channel with step-by-step guides
+### AI-Specific Support
+- **Model Issues**: Report AI model performance issues
+- **Cost Optimization**: Get help optimizing AI usage costs
+- **Integration Help**: Assistance with AI provider setup
+- **Custom Models**: Enterprise support for custom AI model training
 
-### Community Support
-- **Discord Server**: Real-time community chat and support
-- **GitHub Discussions**: Feature requests, Q&A, and community showcase
-- **Stack Overflow**: Tag questions with `starsky-ai` for community help
-
-### Professional Support
-- **Email**: support@starsky.ai for general inquiries
-- **Priority Support**: Available for Pro and Enterprise users
-- **Custom Development**: Contact for enterprise solutions and integrations
-
-## 🗺️ Roadmap
+## 🗺️ AI Roadmap
 
 ### Q1 2024
-- [x] Advanced AI model fine-tuning and optimization
-- [x] Visual builder with drag-and-drop components
-- [x] Plugin system for extensible functionality
-- [x] Enhanced collaboration features with real-time editing
+- [x] Multi-model AI orchestration system
+- [x] Intelligent prompt routing and classification
+- [x] Real-time AI job monitoring and analytics
+- [x] Cost tracking and optimization tools
 
 ### Q2 2024
-- [ ] Mobile app for iOS and Android with full feature parity
-- [ ] Multi-language support (i18n) for global users
-- [ ] Voice-to-code generation with speech recognition
-- [ ] Advanced analytics dashboard with business intelligence
+- [ ] LLaVA visual AI integration for design analysis
+- [ ] Whisper voice-to-code functionality
+- [ ] Custom AI model fine-tuning for enterprise
+- [ ] Advanced AI conversation management
 
 ### Q3 2024
-- [ ] Custom AI model training for enterprise customers
-- [ ] Marketplace for community templates and plugins
-- [ ] Advanced deployment options with Kubernetes support
-- [ ] Performance optimization tools and recommendations
+- [ ] AI-powered testing suite with multiple models
+- [ ] Advanced AI analytics and business intelligence
+- [ ] Multi-language AI model support
+- [ ] AI model marketplace for custom integrations
 
 ### Q4 2024
-- [ ] AI-powered testing suite with automated test generation
-- [ ] Advanced security features and compliance tools
-- [ ] Enterprise compliance tools (SOC 2, GDPR, HIPAA)
-- [ ] Global CDN expansion for improved performance
+- [ ] Edge AI deployment for offline functionality
+- [ ] Advanced AI safety and content filtering
+- [ ] AI model performance optimization
+- [ ] Enterprise AI compliance tools
 
-## 📈 Performance Optimization
+## 📈 AI Performance Optimization
 
-### Frontend Optimization
-- **Code Splitting**: Dynamic imports for route-based splitting
-- **Image Optimization**: Next.js Image component with WebP format
-- **Bundle Analysis**: Webpack Bundle Analyzer for size optimization
-- **Lazy Loading**: Components and routes loaded on demand
-- **Service Worker**: Caching strategy for offline functionality
+### Model Selection Optimization
+- **Prompt Analysis**: Advanced prompt classification for optimal routing
+- **Cost-Performance Balance**: Automatically balance cost vs. quality
+- **Response Caching**: Cache AI responses to reduce costs
+- **Batch Processing**: Optimize multiple AI requests
 
-### Backend Optimization
-- **Database Indexing**: Optimized queries with proper database indexes
-- **Caching Strategy**: Redis for frequently accessed data and sessions
-- **API Optimization**: Response compression, pagination, and rate limiting
-- **CDN Integration**: Static assets served from global CDN
-
-### Monitoring & Alerts
-- **Performance Budgets**: Automated alerts for performance regressions
-- **Real User Monitoring**: Track actual user experience metrics
-- **Synthetic Monitoring**: Automated performance testing from multiple locations
-- **Custom Metrics**: Business-specific performance indicators
+### Monitoring & Analytics
+- **Real-time Metrics**: Live monitoring of all AI model performance
+- **Cost Alerts**: Automated alerts for budget overruns
+- **Quality Scoring**: Track AI response quality and user satisfaction
+- **Usage Optimization**: Recommendations for optimal AI usage
 
 ---
 
-## 🏆 Key Features Summary
+## 🏆 AI Model Comparison
 
-| Feature | Free Tier | Pro Tier | Enterprise |
-|---------|-----------|----------|------------|
-| Projects | 5 | Unlimited | Unlimited |
-| AI Model | starsky-01 | starsky-pro | Custom |
-| Collaborators | 1 | 5 | Unlimited |
-| Templates | Basic | Premium | Custom |
-| GitHub Integration | ✅ | ✅ | ✅ |
-| Visual Builder | ✅ | ✅ | ✅ |
-| Plugin Store | Basic | Full Access | Custom Plugins |
-| Mobile Export | ❌ | ✅ | ✅ |
-| Custom Domains | ❌ | ✅ | ✅ |
-| Priority Support | ❌ | ✅ | ✅ |
-| Advanced Analytics | ❌ | ✅ | ✅ |
-| SSO Integration | ❌ | ❌ | ✅ |
-| Custom Branding | ❌ | ❌ | ✅ |
-| SLA Guarantees | ❌ | ❌ | ✅ |
+| Feature | GPT-4o | Claude 3 | Gemini 1.5 | Command R+ | Mistral 8x | LLaVA | Whisper |
+|---------|--------|----------|------------|------------|------------|-------|---------|
+| **Primary Role** | Core Dev | Reasoning | Cloud/Data | Debug/Optimize | Lightweight | Visual | Audio |
+| **Availability** | Free/Pro | Pro/Enterprise | Free/Pro | Pro/Enterprise | All Tiers | Pro/Enterprise | Pro/Enterprise |
+| **Streaming** | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
+| **Cost (per 1K tokens)** | $0.03 | $0.015 | $0.0075 | $0.003 | $0.0007 | $0.001 | $0.006 |
+| **Max Tokens** | 128K | 200K | 1M | 128K | 32K | 4K | N/A |
+| **Latency** | Medium | Medium | Low | Low | Low | High | Low |
+| **Best For** | Code Gen | Business Logic | APIs/Backend | Debugging | Quick Tasks | UI Analysis | Voice Input |
 
-## 🔧 Technical Specifications
+## 🔧 AI Technical Specifications
 
-### System Requirements
-- **Node.js**: 18.0.0 or higher
-- **Memory**: 4GB RAM minimum (8GB recommended)
-- **Storage**: 2GB free space for dependencies
-- **Browser**: Modern browsers with ES2020 support
+### System Requirements for AI Integration
+- **Memory**: 8GB RAM minimum (16GB recommended for multiple models)
+- **CPU**: Multi-core processor for concurrent AI requests
+- **Network**: Stable internet connection for AI API calls
+- **Storage**: Additional space for AI response caching
 
-### Dependencies
-- **Core**: Next.js 14+, React 18+, TypeScript 5+
-- **UI**: Tailwind CSS, shadcn/ui, Lucide React
-- **Database**: Supabase (PostgreSQL), Redis for caching
-- **Authentication**: Supabase Auth with OAuth providers
-- **Payments**: Stripe for subscription management
-- **Deployment**: Vercel, Netlify, or custom hosting
+### AI Provider Dependencies
+- **OpenAI SDK**: Latest version with streaming support
+- **Anthropic SDK**: Claude 3 integration with safety features
+- **Google AI SDK**: Gemini 1.5 with cloud integration
+- **Cohere SDK**: Command R+ with optimization features
+- **Mistral SDK**: Lightweight processing capabilities
 
-### Browser Support
-- **Chrome**: 90+
-- **Firefox**: 88+
-- **Safari**: 14+
-- **Edge**: 90+
-- **Mobile**: iOS Safari 14+, Chrome Mobile 90+
+Built with ❤️ using Next.js, TypeScript, Tailwind CSS, Supabase, and **7 specialized AI models** for the ultimate development experience.
 
-Built with ❤️ using Next.js, TypeScript, Tailwind CSS, and Supabase.
-
-For the latest updates and announcements, follow us on [Twitter](https://twitter.com/starskyai) and [GitHub](https://github.com/starsky-ai).
+For the latest AI model updates and announcements, follow us on [Twitter](https://twitter.com/starskyai) and [GitHub](https://github.com/starsky-ai).
